@@ -1,0 +1,1144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>巨潮资讯网</title>
+<!-- 公共引用 -->
+<!-- 页面头部和尾部样式与JS的公共引用 -->
+<META http-equiv="X-UA-Compatible" content="IE=edge" > </META>
+<link href="/cninfo-new/css/base.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="/cninfo-new/css/flexslider.css" type="text/css" media="screen" />
+<script language="javascript" type="text/javascript" src="/cninfo-new/js/jquery.js"></script>
+<script language="javascript" type="text/javascript" src="/cninfo-new/js/common/common.js"></script>
+<script language="javascript" type="text/javascript" src="/cninfo-new/js/common/moment.min.js"></script>
+<script defer src="/cninfo-new/js/jquery.flexslider.js"></script>
+<script type="text/javascript">
+	var ondCninfoCommonPage = "companyinfo";
+	var path = "/cninfo-new";
+</script>
+<link href="css/index.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<!-- 页面头部 -->
+<!-- 页面公共头部 -->
+<div class="header">
+	<div class="header-inner">
+		<div class="top">
+			<div class="t-sl">中国证监会指定信息披露网站</div>
+		</div>
+		<div class="logo">
+			<a href="/cninfo-new/index"><img src="/cninfo-new/images/logo.png" /></a>
+		</div>
+		<div class="top-search">
+			<form id="topCommonQueryForm" method="post" name="topCommonQueryForm" action="/cninfo-new/information/topSearch" enctype="multipart/form-data">
+			<input type="hidden" id="top_code_input" name="code" value="" />
+			<input type="text" name="notautosubmit" style="display:none"/>
+			<input id="common_top_input_obj" name="keyWord" type="text" class="top-search-input" autocomplete="off" maxlength="6"
+				placeholder="代码/简称/拼音缩写" />
+			</form>
+			<ul id="common_top_stock_list" name="all_stock" class="drop-down-list top-search-list">
+				<li class="title">
+					<dd>代码</dd>
+					<dd>类别</dd>
+					<dd>简称</dd>
+				</li>
+			</ul>
+			<div class="search-btn">
+				<a href="#"><img src="/cninfo-new/images/icon-search.png" /></a>
+			</div>
+			<!--<div class="keyword">
+				热搜公司：<a href="#">万科A</a>&nbsp;&nbsp;&nbsp;<a href="#">平安银行</a>&nbsp;&nbsp;&nbsp;<a
+					href="#">浦发银行</a>
+			</div>-->
+		</div>
+		<div class="nav">
+			<li><a href="#">信息披露</a>
+				<div class="dropdown-menu">
+					<ul class="dd-column">
+						<dd class="title">
+							<a href="/cninfo-new/disclosure/szse">深市公告</a>
+						</dd>
+						<dd>
+							<a href="/cninfo-new/disclosure/szse_main">主板</a>
+						</dd>
+						<dd>
+							<a href="/cninfo-new/disclosure/szse_sme">中小板</a>
+						</dd>
+						<dd>
+							<a href="/cninfo-new/disclosure/szse_gem">创业板</a>
+						</dd>
+						<dd class="title">
+							<a href="/cninfo-new/disclosure/sse">沪市公告</a>
+						</dd>
+						<dd class="title">
+							<a href="/cninfo-new/disclosure/pre_disclosure">预披露公告</a>
+						</dd>
+						<dd class="title">
+							<a href="/cninfo-new/disclosure/hke">香港公告</a>
+						</dd>
+						<dd>
+							<a href="/cninfo-new/disclosure/hke_main">香港主板</a>
+						</dd>
+						<dd>
+							<a href="/cninfo-new/disclosure/hke_gem">香港创业板</a>
+						</dd>
+						<!--<dd>
+							<a href="/cninfo-new/disclosure/hke_a_h">A+H</a>
+						</dd>-->
+					</ul>
+					<ul class="dd-column">
+						<dd class="title">
+							<a href="/cninfo-new/disclosure/staq_net_delisted">两网公司及退市公司</a>
+						</dd>
+						<dd class="title-2">
+							<a href="/cninfo-new/disclosure/neeq_company">股份转让系统挂牌公司</a>
+						</dd>
+						<dd class="title">
+							<a href="http://www.reeclub.com.cn/information.html" target="_Blank">区域股权市场资讯汇公告</a>
+						</dd>
+						<dd>
+							<a href="http://www.reeclub.com.cn/information2.html?sc=cd" target="_Blank">成都</a>
+						</dd>
+						<dd>
+							<a href="http://www.reeclub.com.cn/information2.html?sc=cq" target="_Blank">重庆</a>
+						</dd>
+						<dd>
+							<a href="http://www.reeclub.com.cn/information2.html?sc=ql" target="_Blank">齐鲁</a>
+						</dd>
+						<dd>
+							<a href="http://www.reeclub.com.cn/information2.html?sc=wh" target="_Blank">武汉</a>
+						</dd>
+					</ul>
+					<ul class="dd-column">
+						<dd class="title">
+							<a href="/cninfo-new/disclosure/fund">基金公告</a>
+						</dd>
+						<dd>
+							<a href="/cninfo-new/disclosure/fund_listed">年度报告</a>
+						</dd>
+						<dd>
+							<a href="/cninfo-new/disclosure/fund_sse">半年度报告</a>
+						</dd>
+						<dd>
+							<a href="/cninfo-new/disclosure/fund_other">季度报告</a>
+						</dd>
+						<dd class="title">
+							<a href="/cninfo-new/disclosure/bond">债券公告</a>
+						</dd>
+						<dd>
+							<a href="/cninfo-new/disclosure/bond_szse">深市债券</a>
+						</dd>
+						<dd>
+							<a href="/cninfo-new/disclosure/bond_sse">沪市债券</a>
+						</dd>
+					</ul>
+					<ul class="dd-column">
+						<dd class="title">
+							<a href="/cninfo-new/disclosure/regulator_szse">监管机构公告</a>
+						</dd>
+						<dd class="title-2">
+							<a href="/cninfo-new/disclosure/regulator_szse">深交所公告</a>
+						</dd>
+						<dd class="title-2">
+							<a href="/cninfo-new/disclosure/regulator_sse">上交所公告</a>
+						</dd>
+						<dd class="title-2">
+							<a href="/cninfo-new/disclosure/regulator_jsgs">结算公司公告</a>
+						</dd>
+						<dd class="title-2">
+							<a href="/cninfo-new/disclosure/regulator_zjh">证监会公告</a>
+						</dd>
+						<!--
+						<dd class="title-2">
+							<a href="/cninfo-new/disclosure/regulator_neeq">全国股份转让系统公司公告</a>
+						</dd>
+						-->
+						<dd class="title">
+							<a href="/cninfo-new/disclosure/continue_supervise">持续督导意见</a>
+						</dd>
+					</ul>
+					<div class="dp-menu-bg"></div>
+					<iframe class="fake" src="about:blank"></iframe>
+				</div>
+			</li>
+			<li><a href="#">市场资讯</a>
+				<div class="dropdown-menu">
+					<ul class="dd-column">
+						<dd class="title">
+							<a href="/cninfo-new/information/companylist">上市公司</a>
+						</dd>
+						<dd class="title">
+							<a href="/cninfo-new/information/fundlist">基金</a>
+						</dd>
+						<dd class="title-2">
+							<a href="/cninfo-new/information/bondlist">债券</a>
+						</dd>
+					</ul>
+					<ul class="dd-column">
+						<dd class="title">
+							<a href="/cninfo-new/information/hq">市场统计</a>
+						</dd>
+						<dd class="title">
+							<a href="http://www.cninfo.com.cn/eipo/index.jsp" target="_blank" >IPO专区</a>
+						</dd>
+						<dd class="title">
+							<a href="http://www.szse.cn/main/aboutus/xywjs/rzrqxzjd/" target="_blank">深圳融资融券业务</a>
+						</dd>
+						<dd class="title-2">
+							<a href="http://www.sse.com.cn/aboutus/innovation/margin/" target="_blank">上海融资融券业务</a>
+						</dd>
+					</ul>
+					<ul class="dd-column">
+						<dd class="title">
+							<a href="/cninfo-new/information/ipolist">拟上市公司清单</a>
+						</dd>
+						<dd class="title-2">
+							<a href="/cninfo-new/information/delistinglist">终止上市公司清单</a>
+						</dd>
+						<dd class="title-2">
+							<a href="/cninfo-new/information/suspendlist">暂停上市公司清单</a>
+						</dd>
+						<dd class="title">
+							<a href="/cninfo-new/information/prbookinfo">定期报告预约披露情况</a>
+						</dd>
+						<dd class="title-2">
+							<a href="/cninfo-new/memo-2">深沪停复牌</a>
+						</dd>
+					</ul>
+					<ul class="dd-column">
+						<dd class="title">
+							<a href="http://www.szse.cn/main/rule/" target="_blank">法律法规</a>
+						</dd>
+						<dd class="title-2">
+							<a href="http://www.szse.cn/main/research/cograduate/researchreport/" target="_blank">研究报告</a>
+						</dd>
+					</ul>
+					<div class="dp-menu-bg"></div>
+					<iframe class="fake" src="about:blank"></iframe>
+				</div>
+			</li>
+			<li><a href="#">产品服务</a>
+				<div class="dropdown-menu">
+					<div class="dp-menu-bg"></div>
+					<iframe class="fake" src="about:blank"></iframe>
+					<ul class="dd-column">
+						<dd class="title">
+							<a target="_blank" href="http://wltp.cninfo.com.cn/gddh_vote/vote/index.do">网络投票</a>
+						</dd>
+						<dd>
+							<a target="_blank" href="https://mmcj.cninfo.com.cn/gddh_vote/vote/inquiryLogon.do">投票查询</a>
+						</dd>
+						<dd>
+							<a target="_blank" href="https://mmcj.cninfo.com.cn/gddh_vote/vote/passwordService.do">服务密码</a>
+						</dd>
+						<dd>
+							<a target="_blank" href="https://mmcj.cninfo.com.cn/gddh_vote/cis/logon.do">服务专区</a>
+						</dd>
+						<dd class="title">
+							<a target="_blank" href="http://irm.cninfo.com.cn/szse/">互动易</a>
+						</dd>
+						<dd>
+							<a target="_blank" href="http://irm.cninfo.com.cn/ircs/sse/sseSubIndex.do?condition.type=5">最新提问</a>
+						</dd>
+						<dd>
+							<a target="_blank" href="http://irm.cninfo.com.cn/ircs/sse/sseSubIndex.do?condition.type=7">最新答复</a>
+						</dd>
+						<dd>
+							<a target="_blank" href="http://irm.cninfo.com.cn/ircs/sse/sseSubIndex.do?condition.type=6">投资者关系信息</a>
+						</dd>
+					</ul>
+					<ul class="dd-column">
+						<dd class="title">
+							<a target="_blank" href="http://xbrl.cninfo.com.cn">分析易</a>
+						</dd>
+						<dd class="title">
+							<a target="_blank" href="http://www.cninfo.com.cn/fwsq/hq/index.htm">行情授权</a>
+						</dd>
+						<dd class="title">
+							<a target="_blank" href="http://www.cnindex.com.cn/">国证指数</a>
+						</dd>
+					</ul>
+					<div class="menu-banner flexslider">
+						<ul class="slides" id="index_scroll">
+							<li><a href="#"><img src="/cninfo-new/images/t-banner-1.jpg"></a></li>
+							<li><a href="#"><img src="/cninfo-new/images/t-banner-1.jpg"></a></li>
+							<li><a href="#"><img src="/cninfo-new/images/t-banner-1.jpg"></a></li>
+							<li><a href="#"><img src="/cninfo-new/images/t-banner-1.jpg"></a></li>
+						</ul>
+					</div>
+				</div>
+			</li>
+		</div>
+	</div>
+</div>
+<script language="javascript" type="text/javascript" src="/cninfo-new/js/common_top.js"></script>
+	<!-- page main start -->
+	<div class="home-main">
+		<div class="home-left">
+			<div class="bulletin-list">
+				<div class="pdf-note" style="z-index:99;">
+					本网站公告采用了PDF文件格式，阅读需下载并安装<a href="https://acrobat.adobe.com/us/en/products/pdf-reader.html" target="_blank">Adobe Acrobat Reader</a>软件
+				</div>
+				<ul class="ct-menu">
+					<li id="a1" onClick="setTab('a',1,3)" class="hover"><a>最新公告</a></li>
+				</ul>
+				<div class="ct-content">
+					<div id="con-a-1" class="hover">
+						<div class="ct-more">
+							<a href="./disclosure/szse">更多</a> <img
+								src="images/more-arrow.gif" />
+						</div>
+						<div class="tt-line">
+							<div class="shrink-all hide">
+								<img src="images/line-arrow-2.png" title="全部收缩" />
+							</div>
+							<div class="expand-all">
+								<img src="images/line-arrow-1.png" title="全部展开" />
+							</div>
+							<div class="t1">代码</div>
+							<div class="t2">简称</div>
+							<div class="t3">公告标题</div>
+						</div>
+						<ul class="ct-line">
+								<li>
+										<div class="t1" code="300199" orgId="9900017848">300199</div>
+										<div class="t2" code="300199" orgId="9900017848">翰宇药业</div>
+									<div class="t3">
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917370?announceTime=2016-01-15" target="_blank">
+												关于获得盐酸氨溴索缓释片临床批件的公告</a>
+										</dd>
+									</div>
+									<div class="t4">
+									</div>
+								</li>
+								<li>
+										<div class="t1" code="000835" orgId="gssz0000835">000835</div>
+										<div class="t2" code="000835" orgId="gssz0000835">长城动漫</div>
+									<div class="t3">
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917343?announceTime=2016-01-15" target="_blank">
+												2015年度业绩预告</a>
+										</dd>
+									</div>
+									<div class="t4">
+									</div>
+								</li>
+								<li>
+										<div class="t1" code="000623" orgId="gssz0000623">000623</div>
+										<div class="t2" code="000623" orgId="gssz0000623">吉林敖东</div>
+									<div class="t3">
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917342?announceTime=2016-01-15" target="_blank">
+												关于成为广发证券股份有限公司第一大股东的提示性公告</a>
+										</dd>
+									</div>
+									<div class="t4">
+									</div>
+								</li>
+								<li>
+												<div class="t0" title="展开"></div>
+										<div class="t1" code="300376" orgId="GD025312">300376</div>
+										<div class="t2" code="300376" orgId="GD025312">易事特</div>
+									<div class="t3">
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917336?announceTime=2016-01-15" target="_blank">
+												关于召开2016年第一次临时股东大会的通知</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917337?announceTime=2016-01-15" target="_blank">
+												关于修订及补充非公开发行A股股票预案的公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917335?announceTime=2016-01-15" target="_blank">
+												关于非公开发行股票预案（修订稿）披露的提示性公告</a>
+										</dd>
+									</div>
+									<div class="t4">
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917341?announceTime=2016-01-15" target="_blank">
+												创业板非公开发行股票预案（修订稿）</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917340?announceTime=2016-01-15" target="_blank">
+												关于公司非公开发行股票摊薄即期回报及应对措施与相关承诺的公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917338?announceTime=2016-01-15" target="_blank">
+												关于转让控股子公司股权并完成工商变更登记的公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917334?announceTime=2016-01-15" target="_blank">
+												第四届董事会第二十二次会议决议公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917333?announceTime=2016-01-15" target="_blank">
+												关于收到《中国证监会行政许可项目审查反馈意见通知书》的公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917339?announceTime=2016-01-15" target="_blank">
+												独立董事关于公司第四届董事会第二十二次会议相关事项的独立意见</a>
+										</dd>
+									</div>
+								</li>
+								<li>
+												<div class="t0" title="展开"></div>
+										<div class="t1" code="000415" orgId="gssz0000415">000415</div>
+										<div class="t2" code="000415" orgId="gssz0000415">渤海租赁</div>
+									<div class="t3">
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917322?announceTime=2016-01-15" target="_blank">
+												2015年年度业绩预告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917321?announceTime=2016-01-15" target="_blank">
+												关于召开公司2016年第二次临时股东大会的通知</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917332?announceTime=2016-01-15" target="_blank">
+												2016年第二次临时董事会会议决议公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917331?announceTime=2016-01-15" target="_blank">
+												关于公司2016年度关联交易预计额度的公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917330?announceTime=2016-01-15" target="_blank"
+											title="关于天津航空金融服务有限公司之全资SPV与海南航空股份有限公司开展飞机租赁业务暨关联交易的公告">
+												关于天津航空金融服务有限公司之全资SPV与海南航空股份有限公司开展飞机租赁业务暨关联交易的...</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917328?announceTime=2016-01-15" target="_blank">
+												关于天津渤海五号租赁有限公司与天津航空有限责任公司开展飞机租赁业务暨关联交易的公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917327?announceTime=2016-01-15" target="_blank">
+												关于海口渤海五号租赁有限公司向关联方申请贷款的公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917326?announceTime=2016-01-15" target="_blank">
+												关于海口渤海五号租赁有限公司与海南航空股份有限公司开展飞机租赁业务暨关联交易的公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917325?announceTime=2016-01-15" target="_blank">
+												关于向聚宝互联科技（深圳）股份有限公司投资的公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917324?announceTime=2016-01-15" target="_blank">
+												关于向渤海人寿保险股份有限公司增资的公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917315?announceTime=2016-01-15" target="_blank">
+												关于拟变更公司名称和证券简称的提示性公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917329?announceTime=2016-01-15" target="_blank">
+												监事辞职公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917320?announceTime=2016-01-15" target="_blank">
+												第八届监事会第六次会议决议公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917316?announceTime=2016-01-15" target="_blank">
+												关于使用募集资金置换先期投入的公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917323?announceTime=2016-01-15" target="_blank">
+												关于签订募集资金监管协议的公告</a>
+										</dd>
+									</div>
+									<div class="t4">
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917319?announceTime=2016-01-15" target="_blank">
+												广发证券股份有限公司关于公司使用募集资金置换预先投入募投项目自筹资金的专项核查意见（二）</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917318?announceTime=2016-01-15" target="_blank"
+											title="募集资金项目中“增资天津渤海开展租赁业务”及“偿还所欠Seaco SRL债务并增资Seaco SRL开展集装箱租赁业务”的预先投入情况报告的专项鉴证报告">
+												募集资金项目中“增资天津渤海开展租赁业务”及“偿还所欠Seaco SRL债务并增资Seac...</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917317?announceTime=2016-01-15" target="_blank">
+												公司章程</a>
+										</dd>
+									</div>
+								</li>
+								<li>
+												<div class="t0" title="展开"></div>
+										<div class="t1" code="002670" orgId="9900022401">002670</div>
+										<div class="t2" code="002670" orgId="9900022401">华声股份</div>
+									<div class="t3">
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917307?announceTime=2016-01-15" target="_blank">
+												关于《发行股份及支付现金购买资产并募集配套资金暨关联交易申请文件反馈意见回复》的补充公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201916025?announceTime=2016-01-15" target="_blank">
+												关于收到中江信托股份有限公司出具的《股份锁定承诺函》的公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201916024?announceTime=2016-01-15" target="_blank">
+												关于重大资产重组事项签署《业绩承诺补偿协议》的公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201916023?announceTime=2016-01-15" target="_blank">
+												第二届董事会第十六次会议决议公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201916027?announceTime=2016-01-15" target="_blank">
+												独立董事关于第二届董事会第十六次会议有关事项的独立意见</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201916026?announceTime=2016-01-15" target="_blank">
+												独立董事关于第二届董事会第十六会议有关事项的事前认可意见</a>
+										</dd>
+									</div>
+									<div class="t4">
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917308?announceTime=2016-01-15" target="_blank">
+												关于发行股份及支付现金购买资产并募集配套资金暨关联交易申请文件反馈意见回复（修订稿）</a>
+										</dd>
+									</div>
+								</li>
+								<li>
+										<div class="t1" code="000776" orgId="gssz0000776">000776</div>
+										<div class="t2" code="000776" orgId="gssz0000776">广发证券</div>
+									<div class="t3">
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917306?announceTime=2016-01-15" target="_blank">
+												关于第一大股东变更的提示性公告</a>
+										</dd>
+									</div>
+									<div class="t4">
+									</div>
+								</li>
+								<li>
+												<div class="t0" title="展开"></div>
+										<div class="t1" code="000558" orgId="gssz0000558">000558</div>
+										<div class="t2" code="000558" orgId="gssz0000558">莱茵体育</div>
+									<div class="t3">
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917301?announceTime=2016-01-15" target="_blank">
+												关于召开公司2016年第二次临时股东大会的通知</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917302?announceTime=2016-01-15" target="_blank">
+												第一期员工持股计划草案（摘要）</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917297?announceTime=2016-01-15" target="_blank">
+												第八届监事会第九次会议决议公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917296?announceTime=2016-01-15" target="_blank">
+												第八届董事会第二十五次会议决议公告</a>
+										</dd>
+									</div>
+									<div class="t4">
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917300?announceTime=2016-01-15" target="_blank">
+												监事会关于公司第一期员工持股计划的审核意见</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917298?announceTime=2016-01-15" target="_blank">
+												第一期员工持股计划（草案）</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917299?announceTime=2016-01-15" target="_blank">
+												独立董事关于公司第一期员工持股计划的独立意见</a>
+										</dd>
+									</div>
+								</li>
+								<li>
+												<div class="t0" title="展开"></div>
+										<div class="t1" code="002435" orgId="9900012933">002435</div>
+										<div class="t2" code="002435" orgId="9900012933">长江润发</div>
+									<div class="t3">
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917291?announceTime=2016-01-15" target="_blank">
+												关于重大资产重组的一般风险提示公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917285?announceTime=2016-01-15" target="_blank">
+												第三届监事会第十一次会议决议公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917284?announceTime=2016-01-15" target="_blank">
+												第三届董事会第十四次会议决议公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917287?announceTime=2016-01-15" target="_blank">
+												关于公司股票暂不复牌的提示性公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917290?announceTime=2016-01-15" target="_blank">
+												独立董事关于第三届董事会第十四次会议相关事项的独立意见</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917286?announceTime=2016-01-15" target="_blank">
+												独立董事关于公司发行股份及支付现金购买资产并募集配套资金暨关联交易的事前认可意见</a>
+										</dd>
+									</div>
+									<div class="t4">
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917292?announceTime=2016-01-15" target="_blank">
+												发行股份及支付现金购买资产并募集配套资金暨关联交易预案</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917294?announceTime=2016-01-15" target="_blank">
+												关于所提供信息真实性、准确性和完整性的声明与承诺</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917289?announceTime=2016-01-15" target="_blank">
+												中小板上市公司重大资产重组方案首次披露对照表</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917288?announceTime=2016-01-15" target="_blank">
+												关于重大事项披露前股票价格波动情况的说明</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917293?announceTime=2016-01-15" target="_blank"
+											title="华泰联合证券有限责任公司关于公司发行股份及支付现金购买资产并募集配套资金暨关联交易预案之独立财务顾问核查意见">
+												华泰联合证券有限责任公司关于公司发行股份及支付现金购买资产并募集配套资金暨关联交易预案之独...</a>
+										</dd>
+									</div>
+								</li>
+								<li>
+												<div class="t0" title="展开"></div>
+										<div class="t1" code="002781" orgId="9900023634">002781</div>
+										<div class="t2" code="002781" orgId="9900023634">奇信股份</div>
+									<div class="t3">
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917283?announceTime=2016-01-15" target="_blank">
+												关于使用募集资金补充营运资金的公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917281?announceTime=2016-01-15" target="_blank">
+												关于使用募集资金置换先期投入募投项目自筹资金的公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917280?announceTime=2016-01-15" target="_blank">
+												第二届监事会第十三次会议决议的公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917278?announceTime=2016-01-15" target="_blank">
+												第二届董事会第十五次会议决议的公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917279?announceTime=2016-01-15" target="_blank">
+												独立董事关于第二届董事会第十五次会议相关事宜的独立意见</a>
+										</dd>
+									</div>
+									<div class="t4">
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917282?announceTime=2016-01-15" target="_blank">
+												安信证券股份有限公司关于公司使用募集资金置换预先已投入募集资金投资项目自筹资金的核查意见</a>
+										</dd>
+									</div>
+								</li>
+								<li>
+												<div class="t0" title="展开"></div>
+										<div class="t1" code="002181" orgId="9900003823">002181</div>
+										<div class="t2" code="002181" orgId="9900003823">粤 传 媒</div>
+									<div class="t3">
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917277?announceTime=2016-01-15" target="_blank">
+												关于公司签署战略合作协议的公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201916011?announceTime=2016-01-15" target="_blank">
+												关于全资子公司广州先锋报业有限公司拟投资设立广东体面体育科技有限公司的公告</a>
+										</dd>
+									</div>
+									<div class="t4">
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201916010?announceTime=2016-01-15" target="_blank">
+												关于拟与万联证券有限责任公司签署战略合作协议的公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201916009?announceTime=2016-01-15" target="_blank">
+												第八届董事会第二十四次会议决议公告</a>
+										</dd>
+									</div>
+								</li>
+								<li>
+										<div class="t1" code="000564" orgId="gssz0000564">000564</div>
+										<div class="t2" code="000564" orgId="gssz0000564">西安民生</div>
+									<div class="t3">
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917276?announceTime=2016-01-15" target="_blank">
+												关于重大资产重组事项获得中国证监会并购重组委审核通过暨公司股票复牌的公告</a>
+										</dd>
+									</div>
+									<div class="t4">
+									</div>
+								</li>
+								<li>
+												<div class="t0" title="展开"></div>
+										<div class="t1" code="000813" orgId="gssz0000813">000813</div>
+										<div class="t2" code="000813" orgId="gssz0000813">天山纺织</div>
+									<div class="t3">
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917274?announceTime=2016-01-15" target="_blank">
+												2015年度业绩预告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917266?announceTime=2016-01-15" target="_blank">
+												关于重大资产出售、置换及发行股份购买资产并募集配套资金暨关联交易报告书的修订说明</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917265?announceTime=2016-01-15" target="_blank">
+												关于公司股票复牌的提示性公告</a>
+										</dd>
+									</div>
+									<div class="t4">
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917272?announceTime=2016-01-15" target="_blank">
+												重大资产出售、置换及发行股份购买资产并募集配套资金暨关联交易报告书（草案）</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917271?announceTime=2016-01-15" target="_blank">
+												重大资产出售、置换及发行股份购买资产并募集配套资金暨关联交易报告书（草案）摘要</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917267?announceTime=2016-01-15" target="_blank">
+												对深圳证券交易所《关于对新疆天山毛纺织股份有限公司的重组问询函》的回复</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917269?announceTime=2016-01-15" target="_blank"
+											title="新疆天阳律师事务所关于公司重大资产出售、置换及发行股份购买资产并募集配套资金暨关联交易之专项核查意见">
+												新疆天阳律师事务所关于公司重大资产出售、置换及发行股份购买资产并募集配套资金暨关联交易之专...</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917268?announceTime=2016-01-15" target="_blank"
+											title="申万宏源证券承销保荐有限责任公司对深圳证券交易所《关于对新疆天山毛纺织股份有限公司的重组问询函》之核查意见">
+												申万宏源证券承销保荐有限责任公司对深圳证券交易所《关于对新疆天山毛纺织股份有限公司的重组问...</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917273?announceTime=2016-01-15" target="_blank"
+											title="申万宏源证券承销保荐有限责任公司关于公司重大资产出售、置换及发行股份购买资产并募集配套资金暨关联交易之独立财务顾问报告">
+												申万宏源证券承销保荐有限责任公司关于公司重大资产出售、置换及发行股份购买资产并募集配套资金...</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917270?announceTime=2016-01-15" target="_blank"
+											title="新疆天阳律师事务所关于公司重大资产出售、置换及发行股份购买资产并募集配套资金暨关联交易之补充法律意见书（一）">
+												新疆天阳律师事务所关于公司重大资产出售、置换及发行股份购买资产并募集配套资金暨关联交易之补...</a>
+										</dd>
+									</div>
+								</li>
+								<li>
+										<div class="t1" code="002477" orgId="9900014450">002477</div>
+										<div class="t2" code="002477" orgId="9900014450">雏鹰农牧</div>
+									<div class="t3">
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917255?announceTime=2016-01-15" target="_blank">
+												关于控股股东及其一致行动人增持公司股票的进展公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917254?announceTime=2016-01-15" target="_blank">
+												2015年12月份销售情况简报</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917253?announceTime=2016-01-15" target="_blank">
+												关于股东股权质押的公告</a>
+										</dd>
+									</div>
+									<div class="t4">
+									</div>
+								</li>
+								<li>
+												<div class="t0" title="展开"></div>
+										<div class="t1" code="002482" orgId="9900014775">002482</div>
+										<div class="t2" code="002482" orgId="9900014775">广田股份</div>
+									<div class="t3">
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917251?announceTime=2016-01-15" target="_blank">
+												关于召开2016年第一次临时股东大会的通知</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917250?announceTime=2016-01-15" target="_blank">
+												关于增资入股上海荣欣装潢设计有限公司并受让部分股权的公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917249?announceTime=2016-01-15" target="_blank">
+												关于投资设立小额贷款公司的公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917248?announceTime=2016-01-15" target="_blank">
+												第三届董事会第二十四次会议决议公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917246?announceTime=2016-01-15" target="_blank">
+												关于为控股子公司深圳市广田方特幕墙科技有限公司提供担保的公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917245?announceTime=2016-01-15" target="_blank">
+												关于为全资子公司深圳广田高科新材料有限公司提供担保的公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917244?announceTime=2016-01-15" target="_blank">
+												关于变更公司总经理、内控中心负责人的公告</a>
+										</dd>
+									</div>
+									<div class="t4">
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917247?announceTime=2016-01-15" target="_blank">
+												独立董事关于公司第三届董事会第二十四次会议相关事项的独立意见</a>
+										</dd>
+									</div>
+								</li>
+								<li>
+										<div class="t1" code="000839" orgId="gssz0000839">000839</div>
+										<div class="t2" code="000839" orgId="gssz0000839">中信国安</div>
+									<div class="t3">
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917243?announceTime=2016-01-15" target="_blank">
+												关于控股股东通过集合资产管理计划方式增持公司股份的公告</a>
+										</dd>
+									</div>
+									<div class="t4">
+									</div>
+								</li>
+								<li>
+										<div class="t1" code="002061" orgId="9900000341">002061</div>
+										<div class="t2" code="002061" orgId="9900000341">江山化工</div>
+									<div class="t3">
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917223?announceTime=2016-01-15" target="_blank">
+												关于召开2016年第一次临时股东大会的提示性公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917222?announceTime=2016-01-15" target="_blank">
+												关于发行股份及支付现金购买资产并募集配套资金暨关联交易方案获得浙江省国资委批复的公告</a>
+										</dd>
+									</div>
+									<div class="t4">
+									</div>
+								</li>
+								<li>
+												<div class="t0" title="展开"></div>
+										<div class="t1" code="002092" orgId="9900001463">002092</div>
+										<div class="t2" code="002092" orgId="9900001463">中泰化学</div>
+									<div class="t3">
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917217?announceTime=2016-01-15" target="_blank">
+												关于召开2016年第一次临时股东大会的公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917221?announceTime=2016-01-15" target="_blank">
+												关于2016年度公司向下属公司提供财务资助的公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917220?announceTime=2016-01-15" target="_blank">
+												关于新增预计公司2016年度日常关联交易的公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917216?announceTime=2016-01-15" target="_blank">
+												对外担保公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917215?announceTime=2016-01-15" target="_blank">
+												五届二十六次监事会决议公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917214?announceTime=2016-01-15" target="_blank">
+												五届三十二次董事会决议公告</a>
+										</dd>
+									</div>
+									<div class="t4">
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917219?announceTime=2016-01-15" target="_blank">
+												独立董事相关事项的独立意见</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917218?announceTime=2016-01-15" target="_blank">
+												独立董事关于公司关联交易事前认可意见</a>
+										</dd>
+									</div>
+								</li>
+								<li>
+												<div class="t0" title="展开"></div>
+										<div class="t1" code="002527" orgId="9900016567">002527</div>
+										<div class="t2" code="002527" orgId="9900016567">新时达</div>
+									<div class="t3">
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917213?announceTime=2016-01-15" target="_blank">
+												第三届董事会第二十一次（临时）会议决议公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917208?announceTime=2016-01-15" target="_blank">
+												第三届监事会第十七次（临时）会议决议公告</a>
+										</dd>
+									</div>
+									<div class="t4">
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917211?announceTime=2016-01-15" target="_blank">
+												公司与苏崇德等19人之盈利补偿协议之补充协议（三）</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917210?announceTime=2016-01-15" target="_blank"
+											title="公司与上海晓奥堃鑫投资中心（有限合伙）、田永鑫、马慧仙、杨斌、王正锋、乐杨之盈利补偿协议之补充协议（三）">
+												公司与上海晓奥堃鑫投资中心（有限合伙）、田永鑫、马慧仙、杨斌、王正锋、乐杨之盈利补偿协议之...</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917212?announceTime=2016-01-15" target="_blank">
+												关于签订《盈利补偿协议之补充协议（三）》暨中国证监会一次反馈回复修订的说明</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917209?announceTime=2016-01-15" target="_blank"
+											title="监事会关于对《取消公司发行股份及支付现金购买资产并募集配套资金方案中有关实际净利润高于承诺净利润的对价调整事项》的监事会意见">
+												监事会关于对《取消公司发行股份及支付现金购买资产并募集配套资金方案中有关实际净利润高于承诺...</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917207?announceTime=2016-01-15" target="_blank">
+												独立董事关于第三届董事会第二十一次（临时）会议相关事项的独立意见</a>
+										</dd>
+									</div>
+								</li>
+								<li>
+										<div class="t1" code="000002" orgId="gssz0000002">000002</div>
+										<div class="t2" code="000002" orgId="gssz0000002">万  科Ａ</div>
+									<div class="t3">
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917092?announceTime=2016-01-15" target="_blank">
+												关于回购股份注销完成暨股份变动公告</a>
+										</dd>
+										<dd>
+											<a href="/cninfo-new/disclosure/szse/bulletin_detail/true/1201917164?announceTime=2016-01-15" target="_blank">
+												关于按照《香港上市规则》公布翌日披露报表的公告</a>
+										</dd>
+									</div>
+									<div class="t4">
+									</div>
+								</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- 首页右侧内容开始 -->
+		<div class="home-right">
+			<div class="home-banner flexslider">
+				<ul class="slides" id="index_scroll_index">
+					<li><a href="#"><img src="images/s-banner-1.jpg" />
+							<div class="title">台城制药首次公开发行股票</div></a></li>
+					<li><a href="#"><img src="images/s-banner-1.jpg" />
+							<div class="title">台城制药首次公开发行股票</div></a></li>
+					<li><a href="#"><img src="images/s-banner-1.jpg" />
+							<div class="title">台城制药首次公开发行股票</div></a></li>
+					<li><a href="#"><img src="images/s-banner-1.jpg" />
+							<div class="title">台城制药首次公开发行股票</div></a></li>
+				</ul>
+			</div>
+			<div class="home-market">
+				<ul class="ct-menu2">
+					<li id="b1" onClick="setTab_zs('b',1,3)" class="hover"><a>国内</a></li>
+					<li id="b2" onClick="setTab_zs('b',2,3)"><a>亚太</a></li>
+					<li id="b3" onClick="setTab_zs('b',3,3)"><a>欧美</a></li>
+				</ul>
+				<div class="ct-content2">
+					<div id="con-b-1" class="hover">
+						<!--
+						<div class="hq-date">2015-1-15</div>
+						-->
+						<ul class="hq-line">
+							<li>
+								<div class="q1">深证成指</div>
+								<div class="q4 show">
+									<img src="/cninfo-new/hq/chart399001.gif" width="298" height="180" />
+								</div>
+							</li>
+							<li>
+								<div class="q1">上证综指</div>
+								<div class="q4">
+									<img src="/cninfo-new/hq/jchart000001.gif" height="180" />
+								</div>
+							</li>
+							<li>
+								<div class="q1">中小板</div>
+								<div class="q4">
+									<img src="/cninfo-new/hq/chart399101.gif" width="298" height="180" />
+								</div>
+							</li>
+							<li>
+								<div class="q1">创业板</div>
+								<div class="q4">
+									<img src="/cninfo-new/hq/chart399006_cninfo.gif" width="298" height="180" />
+								</div>
+							</li>
+						</ul>
+					</div>
+					<div id="con-b-2" style="display: none">
+						<div class="hq-date">2015-1-15</div>
+						<ul class="hq-line" id="ul_ytzs">
+							<!--
+							<li><a href="#">
+									<div class="q1">恒生指数</div>
+									<div class="q2">8009.73</div>
+									<div class="q3 red">
+										124.41 <img src="images/arrow-red.png" /> 1.58%
+									</div>
+							</a></li>
+							<li><a href="#">
+									<div class="q1">日经指数</div>
+									<div class="q2">2224.65</div>
+									<div class="q3 red">
+										30.23 <img src="images/arrow-red.png" /> 1.38%
+									</div>
+							</a></li>
+							<li><a href="#">
+									<div class="q1">韩国KOSPI</div>
+									<div class="q2">5038.03</div>
+									<div class="q3 green">
+										34.22 <img src="images/arrow-green.png" /> 0.18%
+									</div>
+							</a></li>
+							<li><a href="#">
+									<div class="q1">台湾加权</div>
+									<div class="q2">1380.30</div>
+									<div class="q3 red">
+										29.61 <img src="images/arrow-red.png" /> 1.29%
+									</div>
+							</a></li>
+							<li><a href="#">
+									<div class="q1">澳大利亚指数</div>
+									<div class="q2">1380.30</div>
+									<div class="q3 red">
+										29.61 <img src="images/arrow-red.png" /> 1.29%
+									</div>
+							</a></li>
+							-->
+						</ul>
+					</div>
+					<div id="con-b-3" style="display: none">
+						<div class="hq-date">2015-1-15</div>
+						<ul class="hq-line" id="ul_omzs">
+							<!--
+							<li><a href="#">
+									<div class="q1">道琼斯</div>
+									<div class="q2">8009.73</div>
+									<div class="q3 red">
+										124.41 <img src="images/arrow-red.png" /> 1.58%
+									</div>
+							</a></li>
+							<li><a href="#">
+									<div class="q1">纳斯达克</div>
+									<div class="q2">2224.65</div>
+									<div class="q3 red">
+										30.23 <img src="images/arrow-red.png" /> 1.38%
+									</div>
+							</a></li>
+							<li><a href="#">
+									<div class="q1">标普500</div>
+									<div class="q2">5038.03</div>
+									<div class="q3 green">
+										34.22 <img src="images/arrow-green.png" /> 0.18%
+									</div>
+							</a></li>
+							<li><a href="#">
+									<div class="q1">伦敦富时</div>
+									<div class="q2">1380.30</div>
+									<div class="q3 red">
+										29.61 <img src="images/arrow-red.png" /> 1.29%
+									</div>
+							</a></li>
+							<li><a href="#">
+									<div class="q1">德国DAX</div>
+									<div class="q2">1380.30</div>
+									<div class="q3 red">
+										29.61 <img src="images/arrow-red.png" /> 1.29%
+									</div>
+							</a></li>
+							-->
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="home-tips">
+				<div class="title">
+						交易特别提示
+					 <span id="indexMemoDate" class="date"></span>
+				</div>
+				<div class="ct-more">
+					<a href="memo" id="indexMemoDateHref">更多</a> <img src="images/more-arrow.gif" />
+				</div>
+				<ul id="indexMemoContent" class="st-line">
+				</ul>
+			</div>
+		</div>
+		<div class="clear"></div>
+		<!-- 首页右侧内容结束 -->
+	</div>
+	<!-- page main end -->
+
+
+
+	<!-- 弹出部分 start -->
+	<div class="bottom-prompt">
+		<div class="category">特别提示</div>
+		<ul></ul>
+		<div class="prompt-close">
+			<a href="#"><img src="images/icon-close.png" /></a>
+		</div>
+	</div>
+	<!-- 弹出部分 end -->
+
+
+	<!-- 页面底部 -->
+ <!-- 页面公共尾部 -->
+<div class="footer">
+	<div class="footer-inner">
+		<ul class="footer-column">
+			<li class="title">上市公司</li>
+			<li><a href="http://wltp.cninfo.com.cn/gddh_vote/cis/logon.do" target="_blank">网投会议服务专区</a></li>
+			<li><a href="/cninfo-new/information/prbookinfo" target="_blank">定期报告预约披露</a></li>
+			<li><a href="http://www.szse.cn/main/disclosure/bulliten/cxda/cfcfjl/" target="_blank">深市</a>/
+				<a href="http://www.sse.com.cn/disclosure/listedinfo/credibility/home/" target="_blank">沪市诚信记录</a></li>
+			<li><a href="http://www.cninfo.com.cn/dmpt.htm" target="_blank">董秘平台</a></li>
+			<li><a href="http://irm.cninfo.com.cn/ircs/ssgs/ssessgsLogin.do" target="_blank">互动易后台</a></li>
+			<li><a href="http://business.szse.cn/szseLCPortal/login_open.jsp" target="_blank">上市公司业务专区</a></li>
+		</ul>
+		<ul class="footer-column">
+			<li class="title">投资者</li>
+			<li><a href="http://wltp.cninfo.com.cn/gddh_vote/vote/index.do" target="_blank">股东大会网络投票</a></li>
+			<li><a href="http://irm.cninfo.com.cn/szse/" target="_blank">互动易</a></li>
+			<li><a href="http://www.cninfo.com.cn/fwsq/hq/xxsj/jcxx.htm" target="_blank">巨潮信息授权</a></li>
+			<li><a href="http://xbrl.cninfo.com.cn" target="_blank">分析易</a></li>
+		</ul>
+		<ul class="footer-column">
+			<li class="title">相关链接</li>
+			<li><a href="http://www.szse.cn/" target="_blank">深圳证券交易所</a></li>
+			<li><a href="http://www.sse.com.cn/" target="_blank">上海证券交易所</a></li>
+			<li><a href="http://www.cninfo.com.cn/sme/index.html" target="_blank">中小企业板</a></li>
+			<li><a href="http://chinext.cninfo.com.cn/newmarket/" target="_blank">创业板</a></li>
+			<li><a href="http://www.cnindex.com.cn/" target="_blank">巨潮指数</a></li>
+		</ul>
+		<ul class="footer-column">
+			<li class="title">关于我们</li>
+			<li><a href="mailto:ssi@cninfo.com.cn">联系我们</a></li>
+			<li class="social">
+				<div class="weibo">
+					<a href="http://www.weibo.com" target="_blank"><img
+						src="/cninfo-new/images/footer-icon-weibo.png" /></a>
+				</div>
+				<div class="weibo">
+					<img src="/cninfo-new/images/icon-weixin.jpg" width="32px" id="wx_img"/>
+				</div>
+				<div id="wx_ewm_div" style="display:none;">
+					<img src="/cninfo-new/images/wx_ewm.jpg" width="120px" id="wx_ewm_img"/>
+				</div>
+			</li>
+		</ul>
+		<div class="clear"></div>
+	</div>
+	<div class="copyright">© 深圳证券信息有限公司 版权所有 ICP证 粤B2-20050313</div>
+</div>
+<div id="scroll-top-link">
+	<a href="#"></a>
+</div>
+<!--  Delayed js file -->
+<script language="javascript" type="text/javascript" src="js/base.js"></script>
+<script language="javascript" type="text/javascript" src="js/index.js"></script>
+</body>
+</html>
