@@ -13,3 +13,6 @@ SPIDER_MODULES = ['scrapyspider.spiders']
 NEWSPIDER_MODULE = 'scrapyspider.spiders'
 USER_AGENT = '%s/%s' % (BOT_NAME, BOT_VERSION)
 
+ITEM_PIPELINES = {  
+    'scrapyspider.pipelines.ScrapyspiderPipeline':300  
+}  
