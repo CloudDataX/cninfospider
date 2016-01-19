@@ -12,12 +12,10 @@ class CninfoSpider(Spider):
         sel = Selector(response)  
 
         item = CninfoItem()
-			 
-        item['companyname'] = sel.xpath('//div[@class="bd-top"]/h2/text()').extract()
+
+        item['companyinfo'] = sel.xpath('//div[@class="bd-top"]/h2/text()').extract()
         item['reportyear'] = sel.xpath('//div[@class="year"]/text()').extract()
         item['reportday'] = sel.xpath('//div[@class="day"]/text()').extract()
         item['downloadhref'] = sel.xpath('//div[@class="btn-blue bd-btn"]/a/@href').extract()
-		
-        print "my item is:", item
 
         return item  

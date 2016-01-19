@@ -11,9 +11,7 @@ class ScrapyspiderItem(Item):
     pass
 
 class CninfoItem(Item):
-    companyname = Field()
-    #stockcode = Field()
+    companyinfo = Field()
     reportyear = Field()
     reportday = Field()
     downloadhref = Field()
-	
