@@ -6,7 +6,7 @@ from scrapyspider.items import CninfoItem
 class CninfoSpider(Spider):  
     name = "cninfo"  
     allowed_domains = ["cninfo.com.cn"]  
-    start_urls = ["http://www.cninfo.com.cn/cninfo-new/disclosure/sse/bulletin_detail/true/1200736281?announceTime=2015-03-25"]  
+    start_urls = ["http://www.cninfo.com.cn/cninfo-new/disclosure/sse/bulletin_detail/true/1201359251?announceTime=2015-07-29"]  
   
     def parse(self, response):  
         sel = Selector(response)  

@@ -10,84 +10,110 @@ import re
 class ScrapyspiderPipeline(object):
     
     financialfolder = r'E:\financialdata'
+    companyinfotxt = financialfolder + '\\' + 'companyinfolist.txt'
     
     def process_item(self, item, spider):
         
-        self.creatfinancialfolder()
+        self.creatfileandfolder()
         
-        #get info from item
-        companyinfo = self.processcompanyinfo(item)
+        #Process item get the following info
+        returnlist = self.processiteminfo(item)
         
-        companyname = u'中国船舶' 
-        companyinfo = u'600111 中国船舶报告' 
-        companydir = self.savecompanyinfo(companyname, companyinfo)
+        #stockcode = returnlist[0]
+        companyname = returnlist[1]
+        reportname = returnlist[2]
+        #reportdate = returnlist[3]
         
-        pdfpath = companydir + '\\' + companyname + '.pdf'
+        #Create company folder
+        companyfolder = self.financialfolder + '\\' + companyname
+        if not os.path.exists(companyfolder):
+            os.mkdir(companyfolder)
+        else:
+            print 'WRN: ', companyfolder, 'is already exists'
         
+        #Download pdf to the created folder
+        pdfpath = companyfolder + '\\' + reportname + '.pdf'
+        returnlist.append(pdfpath)
         downloadlink = u'http://www.cninfo.com.cn' + "".join(item['downloadhref'])
-        print "Real download URL =", downloadlink
-        print 'Down load pdf path:', pdfpath
-
         try:
             if not os.path.exists(pdfpath):
                 urllib.urlretrieve(downloadlink, pdfpath)
             else:
-                print 'WRN: ', companyname, 'already exists'
+                print 'WRN: ', reportname, '.pdf is already exists'
         except IOError:
             print "ERROR: I/O ERROR save pdf fail"
 
+        #save company info to txt
+        tempinfo = " ".join(returnlist[:3])
+        txtinfo = tempinfo.strip()
+        
+        if not self.isinfointxt(txtinfo):
+            self.saveinfointxt(returnlist)
+
         return item
     
-    def processcompanyinfo(self, item):
+    def processiteminfo(self, item):
         
+        #retrunlist[0-3]: stock code, company name, report name, report date
+        returnlist = []
+        
+        #Connect item to a str
         for index in range(len(item['companyinfo'])):
-            item['companyinfo'][index] = item['companyinfo'][index] .strip()    
-        companyname = "".join(item['companyinfo'])
-        companyinfo = companyname.split(' ')
+            item['companyinfo'][index] = item['companyinfo'][index].strip()
+            item['companyinfo'][index] = re.sub(u' ', '', item['companyinfo'][index])
+            item['companyinfo'][index] = re.sub(u'：', '', item['companyinfo'][index])   
+        infostr = "".join(item['companyinfo'])
         
-        print companyinfo[1]
-        #pos = re.match(r'^\d+', companyinfo[1])
-        #print pos.groups()
+        #Get the stock code
+        splitdate1 = infostr[0:6]
+        returnlist.append(splitdate1)
         
+        #Split company name and report name
+        splitdate2 = infostr[6:]
+        pdfinfo = re.match(r'[^u4e00-u9fa5]+', splitdate2)
+        if pdfinfo:
+            returnlist.append(pdfinfo.group(0))
+            returnlist.append(splitdate2[pdfinfo.end(0):])
+        else:
+            print "processcompanyinfo: not matched"
+        
+        #Get report date
         reportdate = ''.join(item['reportyear']) + u'月' + ''.join(item['reportday'])
+        returnlist.append(reportdate)
         
-        companyinfo.append(reportdate)
-        
-        for value in companyinfo:
-            print 'companyinfo is:', value
-        
-        return companyinfo
+        return returnlist
             
-    def creatfinancialfolder(self):
+    def creatfileandfolder(self):
         
         if not os.path.exists(self.financialfolder):
             os.mkdir(self.financialfolder)
+        if not os.path.exists(self.companyinfotxt):
+            openfile = open(self.companyinfotxt, 'w')
+            openfile.close()
         return
-    
-    def savecompanyinfo(self, companyname, companyinfo):
-              
-        companylist = self.financialfolder + '\\' + 'companylist.txt'
-        companydir = self.financialfolder + '\\' + companyname
-        print companylist
-        print companydir
-    
-        self.createcompanyfolder(companydir)
-        self.saveinfoinlistfile(companylist, companyinfo)
+
+    def saveinfointxt(self, returnlist):
         
-        return companydir
-    
-    def createcompanyfolder(self, companydir):
-    
-        if not os.path.exists(companydir):
-            os.mkdir(companydir)
+        openfile = open(self.companyinfotxt, 'a')
+        
+        for value in returnlist:
+            openfile.write(value.encode('utf-8'))
+            openfile.write(' ')
+        openfile.write('\n')
+        openfile.close()
         return
 
-    def saveinfoinlistfile(self, companylist, companyinfo):
-
-        companyfile = open(companylist, 'a')
-        companyfile.write(companyinfo.encode('utf-8'))
-        companyfile.write('\n')
-        companyfile.close()
-        return
-
-
+    def isinfointxt(self, txtinfo):
+        try:
+            lines=open(self.companyinfotxt,'r').readlines()
+            flen=len(lines)
+            for i in range(flen):
+                if re.match(txtinfo.encode('utf-8'),lines[i-1]):
+                    print 'WRN: ', txtinfo, 'is already in txt'
+                    return True
+         
+        except Exception,e:
+            print e
+        
+        return False
+    
