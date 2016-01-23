@@ -9,15 +9,15 @@ import re
 
 class ScrapyspiderPipeline(object):
     
-    financialfolder = r'E:\financialdata'
-    companyinfotxt = financialfolder + '\\' + 'companyinfolist.txt'
+    financialFolder = r'E:\financialdata'
+    companyInfoTxt = financialFolder + '\\' + 'companyinfolist.txt'
     
     def process_item(self, item, spider):
         
-        self.creatfileandfolder()
+        self.createFileandFolder()
         
         #Process item get the following info
-        returnlist = self.processiteminfo(item)
+        returnlist = self.processItemInfo(item)
         
         #stockcode = returnlist[0]
         companyname = returnlist[1]
@@ -25,14 +25,14 @@ class ScrapyspiderPipeline(object):
         #reportdate = returnlist[3]
         
         #Create company folder
-        companyfolder = self.financialfolder + '\\' + companyname
-        if not os.path.exists(companyfolder):
-            os.mkdir(companyfolder)
+        companyFolder = self.financialFolder + '\\' + companyname
+        if not os.path.exists(companyFolder):
+            os.mkdir(companyFolder)
         else:
-            print 'WRN: ', companyfolder, 'is already exists'
+            print 'WRN: ', companyFolder, 'is already exists'
         
         #Download pdf to the created folder
-        pdfpath = companyfolder + '\\' + reportname + '.pdf'
+        pdfpath = companyFolder + '\\' + reportname + '.pdf'
         returnlist.append(pdfpath)
         downloadlink = u'http://www.cninfo.com.cn' + "".join(item['downloadhref'])
         try:
@@ -47,12 +47,12 @@ class ScrapyspiderPipeline(object):
         tempinfo = " ".join(returnlist[:3])
         txtinfo = tempinfo.strip()
         
-        if not self.isinfointxt(txtinfo):
-            self.saveinfointxt(returnlist)
+        if not self.isInfoInTxt(txtinfo):
+            self.saveInfoInTxt(returnlist)
 
         return item
     
-    def processiteminfo(self, item):
+    def processItemInfo(self, item):
         
         #retrunlist[0-3]: stock code, company name, report name, report date
         returnlist = []
@@ -83,18 +83,18 @@ class ScrapyspiderPipeline(object):
         
         return returnlist
             
-    def creatfileandfolder(self):
+    def createFileandFolder(self):
         
-        if not os.path.exists(self.financialfolder):
-            os.mkdir(self.financialfolder)
-        if not os.path.exists(self.companyinfotxt):
-            openfile = open(self.companyinfotxt, 'w')
+        if not os.path.exists(self.financialFolder):
+            os.mkdir(self.financialFolder)
+        if not os.path.exists(self.companyInfoTxt):
+            openfile = open(self.companyInfoTxt, 'w')
             openfile.close()
         return
 
-    def saveinfointxt(self, returnlist):
+    def saveInfoInTxt(self, returnlist):
         
-        openfile = open(self.companyinfotxt, 'a')
+        openfile = open(self.companyInfoTxt, 'a')
         
         for value in returnlist:
             openfile.write(value.encode('utf-8'))
@@ -103,9 +103,9 @@ class ScrapyspiderPipeline(object):
         openfile.close()
         return
 
-    def isinfointxt(self, txtinfo):
+    def isInfoInTxt(self, txtinfo):
         try:
-            lines=open(self.companyinfotxt,'r').readlines()
+            lines=open(self.companyInfoTxt,'r').readlines()
             flen=len(lines)
             for i in range(flen):
                 if re.match(txtinfo.encode('utf-8'),lines[i-1]):
