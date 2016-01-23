@@ -13,6 +13,9 @@ SPIDER_MODULES = ['scrapyspider.spiders']
 NEWSPIDER_MODULE = 'scrapyspider.spiders'
 USER_AGENT = '%s/%s' % (BOT_NAME, BOT_VERSION)
 
-ITEM_PIPELINES = {  
-    'scrapyspider.pipelines.ScrapyspiderPipeline':300  
-}  
+DOWNLOADER_MIDDLEWARES = {
+    'scrapyspider.middlewares.CninfoGetAnnouncementMiddleware': 543
+ }
+#ITEM_PIPELINES = {  
+ #   'scrapyspider.pipelines.ScrapyspiderPipeline':300  
+#}  
