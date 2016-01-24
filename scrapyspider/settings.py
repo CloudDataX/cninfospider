@@ -12,7 +12,7 @@ BOT_VERSION = '1.0'
 SPIDER_MODULES = ['scrapyspider.spiders']
 NEWSPIDER_MODULE = 'scrapyspider.spiders'
 USER_AGENT = '%s/%s' % (BOT_NAME, BOT_VERSION)
-
+RETRY_TIMES=0
 DOWNLOADER_MIDDLEWARES = {
     'scrapyspider.middlewares.CninfoGetAnnouncementMiddleware': 543
  }

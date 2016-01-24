@@ -11,11 +11,22 @@ import cookielib
 from urllib import urlencode
 from urllib import unquote
 import json
+import os
+from pyasn1.type.univ import Null
 logger = logging.getLogger('CninfoGetAnnouncementMiddleware')
 class CninfoGetAnnouncementMiddleware(object):
     def __init__(self, options, max_sum):
         self.options = options
         self.max_sum = max_sum
+        
+        filename = 'result\szse_stock_failList.json'
+        #remove result files at begiin
+        if (os.path.isfile(filename)):
+            os.remove(filename)
+            outputResult = open(filename, 'wb')
+            outputResult.write('{"stockList":[]}')
+            outputResult.close()
+            print "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"
     @classmethod
     def from_crawler(cls, crawler):
         return cls(
@@ -24,7 +35,8 @@ class CninfoGetAnnouncementMiddleware(object):
         )
     def process_request(self, request, spider):
         service_args = ['--load-image=false', '--disk-cache=true']
-        url = 'http://www.cninfo.com.cn/cninfo-new/announcement/query'
+        url ='http://www.cninfo.com.cn/cninfo-new/announcement/query'
+        startUrl ='http://www.cninfo.com.cn/cninfo-new/announcement/show'
         pageSize=30
         pageNum=1
         heads = { 'Accept':'application/json, text/javascript, */*; q=0.01',
@@ -42,12 +54,16 @@ class CninfoGetAnnouncementMiddleware(object):
                 'X-Requested-With':'XMLHttpRequest' } 
         try:
             
-            if('http://www.cninfo.com.cn/cninfo-new/announcement/show'==request.url):
-                return HtmlResponse(url, encoding='utf-8', status=200, body='start')
-            elif (''!=request.meta['stock'] and 0!=request.meta['pageNum'] and 50>request.meta['pageNum']):
-                print '************else if'
+            if(startUrl==request.url[0:len(startUrl)]):
+                if(None==request.meta.get('jsonStockIndex', None)):
+                    jsonStockIndex=0
+                else:
+                    jsonStockIndex =request.meta['jsonStockIndex']
+                content='jsonStockIndex='+str(jsonStockIndex)
+                return HtmlResponse(url, encoding='utf-8', status=200, body=content)
+            elif (''!=request.meta['code'] and ''!=request.meta['orgId'] and 0!=request.meta['pageNum'] and 50>request.meta['pageNum']):
                 pageNum=request.meta['pageNum']
-                stock=request.meta['stock']
+                stock=request.meta['code']+'%2C'+request.meta['orgId']
                 postdata='stock='+stock+'%3B&searchkey=&plate=&category=category_ndbg_szsh%3Bcategory_bndbg_szsh%3Bcategory_yjdbg_szsh%3Bcategory_sjdbg_szsh%3B&trade=&column=szse_gem&columnTitle=%E5%8E%86%E5%8F%B2%E5%85%AC%E5%91%8A%E6%9F%A5%E8%AF%A2&pageNum='+str(pageNum)+'&pageSize=30&tabName=fulltext&sortName=&sortType=&limit=&showTitle=&seDate=%E8%AF%B7%E9%80%89%E6%8B%A9%E6%97%A5%E6%9C%9F'   
                 print '************',postdata
                 
@@ -62,14 +78,43 @@ class CninfoGetAnnouncementMiddleware(object):
                 #get page sum number
                 
                 jsonAnnouncements['pageNum']=pageNum
+                jsonAnnouncements['jsonStockIndex']=request.meta['jsonStockIndex']
                 content=json.dumps(jsonAnnouncements,ensure_ascii=False,indent=2)
                 
                 print '*****pageSumNums',jsonAnnouncements['pageNum']
                 return HtmlResponse(url, encoding='utf-8', status=200, body=content)
             else:
-                print '*****error!!! stock:',request.meta['stock'],'pageNum:',request.meta['pageNum']
+                print '*****error!!! jsonStockIndex:',request.meta['jsonStockIndex'],'pageNum:',request.meta['pageNum']
                 
         except Exception, e:
             logger.warning(e)
-            logger.info('******Exception content is empty : 504')
-            return HtmlResponse(request.url, encoding='utf-8', status=503, body='')
+            logger.info('******process_request fail : 504')
+            filename = 'result\szse_stock_failList.json'
+            srcStockfilename='szse_stock.json'
+            outputResult=open(filename).read()
+            outputFile=open(filename,'w')         
+            try:                
+                outputResult=outputResult[:-2] #delete last two char
+                if(20<len(outputResult)):
+                    outputResult=outputResult+','
+                if(None!=request.meta.get('jsonStockIndex', None)):                    
+                    jsonSzse_stocks=json.loads(open(srcStockfilename, 'rb').read())
+                    errorStockStr=json.dumps(jsonSzse_stocks['stockList'][request.meta['jsonStockIndex']])
+                    outputResult=outputResult+errorStockStr+']}'
+                else:
+                    jsonSzse_stocks=json.loads(open(srcStockfilename, 'rb').read())
+                    errorStockStr=json.dumps(jsonSzse_stocks['stockList'][0])
+                    outputResult=outputResult+errorStockStr+']}'
+                outputFile.write(outputResult)
+            finally:  
+                outputFile.close()
+            
+            if(None==request.meta.get('jsonStockIndex', None)):
+                jsonStockIndex=1
+            else:
+                jsonStockIndex =request.meta['jsonStockIndex']+1
+            content='jsonStockIndex='+str(jsonStockIndex)
+            
+            #if return 503 error, it will ignore handler parse, so change error code to 200
+            #return HtmlResponse(request.url, encoding='utf-8', status=503, body=content) 
+            return HtmlResponse(request.url, encoding='utf-8', status=200, body=content)
