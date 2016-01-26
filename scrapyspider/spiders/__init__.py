@@ -4,6 +4,7 @@
 # your spiders.
 
 import os
+import codecs
 
 financialFolder = r'E:\financialdata'
 jsonFile = financialFolder + '\\' + 'stockreportlist.json'
@@ -11,5 +12,6 @@ jsonFile = financialFolder + '\\' + 'stockreportlist.json'
 if not os.path.exists(financialFolder):
     os.mkdir(financialFolder)
 if not os.path.exists(jsonFile):
-    openfile = open(jsonFile, 'w')
-    openfile.close()
+    with codecs.open(jsonFile,'w','utf-8') as f:
+        f.write(r'''{"stockList":[]}''')
+        f.close()

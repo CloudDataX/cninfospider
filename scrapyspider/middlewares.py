@@ -1,6 +1,5 @@
 #! -*- coding:utf-8 -*-
 # encoding: utf-8
-from selenium import webdriver
 from scrapy.http import HtmlResponse
 import logging
 import time
@@ -12,7 +11,6 @@ from urllib import urlencode
 from urllib import unquote
 import json
 import os
-from pyasn1.type.univ import Null
 logger = logging.getLogger('CninfoGetAnnouncementMiddleware')
 class CninfoGetAnnouncementMiddleware(object):
     def __init__(self, options, max_sum):

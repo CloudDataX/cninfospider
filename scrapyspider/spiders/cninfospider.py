@@ -14,7 +14,7 @@ import time
 import os
 import urllib
 import re
-
+import codecs
   
 class CninfoSpider(Spider):  
     name = "cninfo"  
@@ -24,6 +24,7 @@ class CninfoSpider(Spider):
     homePage = r"http://www.cninfo.com.cn"  
     financialFolder = r'E:\financialdata'
     savedInfoFile = financialFolder + '\\' + 'stockreportlist.json'
+    savedStockSumNum = 0
     
     def GetJsonStockIndex(self,response):
         if('jsonStockIndex='==response.body[0:len('jsonStockIndex=')]):
@@ -77,7 +78,7 @@ class CninfoSpider(Spider):
             jsonStockIndex=jsonAnnouncements['jsonStockIndex']
             pageSumNums=0
             pageSize=30
-            savedInfo = {"secCode":" ","secName":" ","announcementTitle":" ","adjunctUrl":" ","pdfPath":" "}
+            savedInfo = {"secCode": " ","secName": " ","announcementTitle": " ","adjunctUrl": " ","pdfPath": " ","announcementTime": " "}
             if(0==jsonAnnouncements['totalRecordNum']%pageSize):
                 pageSumNums=jsonAnnouncements['totalRecordNum']/pageSize
             else:
@@ -90,20 +91,32 @@ class CninfoSpider(Spider):
                 
                 #todo: download pdf
                 companyFolder = self.createCompanyFolder(announcement['secCode'])
-                pdfPath = self.downloadPDF(companyFolder, announcement['announcementTitle'],announcement['adjunctUrl'])
+                if announcement["secName"] == None or announcement['announcementTitle'] == None:
+                    pdfname = announcement['announcementTitle']
+                else:
+                    pdfname = announcement["secName"]+announcement['announcementTitle']
+                pdfPath = self.downloadPDF(companyFolder, pdfname,announcement['adjunctUrl'])
                 
-
                 savedInfo['secCode'] = announcement['secCode']
                 savedInfo['secName'] = announcement['secName']
                 savedInfo['announcementTitle'] = announcement['announcementTitle']
                 savedInfo['adjunctUrl'] = announcement['adjunctUrl']
                 savedInfo['pdfPath'] = pdfPath
+                savedInfo['announcementTime'] = announcement['announcementTime']
+                #savedInfo['announcementTime'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(announcement['announcementTime']))
                 
                 if not self.isInfoInJson(savedInfo):
-                    with open(self.savedInfoFile,'a') as f:
-                        print 'savedinfo is:', savedInfo
-                        f.write(json.dumps(savedInfo,ensure_ascii=False,indent=2))
-                        f.close()
+                    try:
+                        savedInfofileread = codecs.open(self.savedInfoFile,'rb','utf-8')
+                        readdata = savedInfofileread.read()[:-2]
+                        if(20<len(readdata)):
+                            readdata=readdata+','
+                        writedata = json.dumps(savedInfo,ensure_ascii=False,indent=2)
+                        writedata = readdata+writedata+']}'
+                        savedInfofilewrite = codecs.open(self.savedInfoFile,'w','utf-8')
+                        savedInfofilewrite.write(writedata)
+                    finally:
+                        savedInfofilewrite.close()
             
             print "parseDetail: ########################################################"
             if(pageSumNums>pageNum):#go to read next page of current stock code
@@ -116,8 +129,8 @@ class CninfoSpider(Spider):
             
             yield Request(self.generateUrl(startUrl, '', 1, jsonStockIndex), callback=self.parse, meta={'jsonStockIndex':jsonStockIndex}) 
 
-    def createCompanyFolder(self, stockName):
-        companyFolder = self.financialFolder + '\\' + stockName
+    def createCompanyFolder(self, secCode):
+        companyFolder = self.financialFolder + '\\' + secCode
         if not os.path.exists(companyFolder):
             os.mkdir(companyFolder)
         else:
@@ -141,15 +154,19 @@ class CninfoSpider(Spider):
 
     def isInfoInJson(self, announcement):
         try:
-            savedInfo=json.loads(open(self.savedInfoFile, 'rb').read())
-            index = 0
-            for value in savedInfo['secCode']:
-                index=index+1
-        
-            for i in index:
-                if savedInfo['secCode'][i] == announcement['secCode'] and savedInfo['announcementTitle'][i] == announcement['announcementTitle']:
-                    return True
-        except ValueError:
-            return False
+            savedInfofile=json.loads(codecs.open(self.savedInfoFile,'r','utf-8').read())
+            
+            if 5 > len(savedInfofile["stockList"]):
+                return False
+            else:
+                for jsonSzse_stock in savedInfofile['stockList']:
+                    self.savedStockSumNum=self.savedStockSumNum+1
+                print "-------------",len(savedInfofile['stockList'])
+                for index in range(self.savedStockSumNum):
+                    if savedInfofile["stockList"][index]['secCode'] == announcement['secCode'] and savedInfofile["stockList"][index]['announcementTitle'] == announcement['announcementTitle']:
+                        print "WRN stock report already exist", announcement['secCode'],announcement['announcementTitle']
+                        return True
+        except Exception,e:
+            print e
             
         return False      
