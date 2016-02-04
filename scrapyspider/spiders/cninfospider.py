@@ -89,7 +89,11 @@ class CninfoSpider(Spider):
                 orgId=announcement['orgId']
                 stock=code+'%2C'+orgId
                 
-                #todo: download pdf
+                #Skip not needed pdf
+                if not self.isNeededAnnouncementTitle(announcement['announcementTitle']):
+                    continue
+                
+                #Download pdf
                 companyFolder = self.createCompanyFolder(announcement['secCode'])
                 if announcement["secName"] == None or announcement['announcementTitle'] == None:
                     pdfname = announcement['announcementTitle']
@@ -105,6 +109,7 @@ class CninfoSpider(Spider):
                 savedInfo['announcementTime'] = announcement['announcementTime']
                 #savedInfo['announcementTime'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(announcement['announcementTime']))
                 
+                #save info in Json
                 if not self.isInfoInJson(savedInfo):
                     try:
                         savedInfofileread = codecs.open(self.savedInfoFile,'rb','utf-8')
@@ -169,4 +174,20 @@ class CninfoSpider(Spider):
         except Exception,e:
             print e
             
-        return False      
+        return False
+    
+    def isNeededAnnouncementTitle(self, announcementTitle):
+        print "isNeedAnnouncementTitle:", announcementTitle
+        filter1 = announcementTitle.find(u"摘要") 
+        filter2 = announcementTitle.find(u"英文版")
+        filter3 = announcementTitle.find(u"正文")
+        if filter1 != -1 or filter2 != -1 or filter3 != -1:
+            print "isNeedAnnouncementTitle: False"
+            return False
+        else:
+            print "isNeedAnnouncementTitle: True"
+            return True
+        
+        
+        
+        
