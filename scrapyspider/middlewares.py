@@ -34,7 +34,7 @@ class CninfoGetAnnouncementMiddleware(object):
     def process_request(self, request, spider):
         service_args = ['--load-image=false', '--disk-cache=true']
         url ='http://www.cninfo.com.cn/cninfo-new/announcement/query'
-        startUrl ='http://www.cninfo.com.cn/cninfo-new/announcement/show'
+        startUrl ='http://www.cninfo.com.cn/cninfo-new/disclosure/szse_main'
         pageSize=30
         pageNum=1
         heads = { 'Accept':'application/json, text/javascript, */*; q=0.01',
@@ -87,7 +87,7 @@ class CninfoGetAnnouncementMiddleware(object):
         except Exception, e:
             logger.warning(e)
             logger.info('******process_request fail : 504')
-            filename = 'result\szse_stock_failList.json'
+            filename = '/home/xproject/financialdata/szse_stock_failList.json'
             srcStockfilename='szse_stock.json'
             outputResult=open(filename).read()
             outputFile=open(filename,'w')         

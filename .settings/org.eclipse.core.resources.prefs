@@ -1,2 +1,4 @@
 eclipse.preferences.version=1
+encoding//scrapyspider/middlewares.py=utf-8
 encoding//scrapyspider/pipelines.py=utf-8
+encoding//scrapyspider/spiders/cninfospider.py=utf-8

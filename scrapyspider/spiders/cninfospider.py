@@ -15,15 +15,18 @@ import os
 import urllib
 import re
 import codecs
-  
+import platform
+
+
 class CninfoSpider(Spider):  
     name = "cninfo"  
     allowed_domains = ["cninfo.com.cn"]  
-    start_urls = ["http://www.cninfo.com.cn/cninfo-new/announcement/show"]  
-    stockCodeSumNum = 2
+    start_urls = ["http://www.cninfo.com.cn/cninfo-new/disclosure/szse_main"]
+    allstockjson_url = "http://www.cninfo.com.cn/cninfo-new/js/data/szse_stock.json"
+    stockNumsInAllStockJson = 0
     homePage = r"http://www.cninfo.com.cn"  
-    financialFolder = r'E:\financialdata'
-    savedInfoFile = financialFolder + '\\' + 'stockreportlist.json'
+    financialFolder = ''
+    savedInfoFile = ''
     savedStockSumNum = 0
     
     def GetJsonStockIndex(self,response):
@@ -36,18 +39,20 @@ class CninfoSpider(Spider):
     def generateUrl(self,url,stock,pageNum,jsonStockIndex):
         return url+'?stock='+stock+'&pageNum='+str(pageNum)+'&jsonStockIndex='+str(jsonStockIndex)
     
-    def parse(self, response): 
+    def parse(self, response):
+        self.createFinancialDataFolder() 
+        allStockJsonPath = self.downloadAllStockJson()
         queryUrl='http://www.cninfo.com.cn/cninfo-new/announcement/query'
         jsonStockIndex = self.GetJsonStockIndex(response)
-        print "start get stock data,jsonStockIndex=",jsonStockIndex,'self.stockCodeSumNum:',self.stockCodeSumNum
-        if(0<=jsonStockIndex and jsonStockIndex<self.stockCodeSumNum):
-            filename='szse_stock.json'
-            jsonSzse_stocks=json.loads(open(filename, 'rb').read())
-            if(2==self.stockCodeSumNum):                
-                self.stockCodeSumNum=0
-                for jsonSzse_stock in jsonSzse_stocks['stockList']:
-                    self.stockCodeSumNum=self.stockCodeSumNum+1
-
+        print "start get stock data,jsonStockIndex=",jsonStockIndex,'self.stockNumsInAllStockJson:',self.stockNumsInAllStockJson
+        
+        jsonSzse_stocks=json.loads(open(allStockJsonPath, 'rb').read())
+        if self.stockNumsInAllStockJson == 0:
+            for jsonSzse_stock in jsonSzse_stocks['stockList']:
+                self.stockNumsInAllStockJson=self.stockNumsInAllStockJson+1
+                    
+        if(0<=jsonStockIndex and jsonStockIndex<self.stockNumsInAllStockJson):      
+              
             code=jsonSzse_stocks['stockList'][jsonStockIndex]['code']
             orgId=jsonSzse_stocks['stockList'][jsonStockIndex]['orgId']
             stock=jsonSzse_stocks['stockList'][jsonStockIndex]['code']+'%2C'+jsonSzse_stocks['stockList'][jsonStockIndex]['orgId']
@@ -101,6 +106,7 @@ class CninfoSpider(Spider):
                     pdfname = announcement["secName"]+announcement['announcementTitle']
                 pdfPath = self.downloadPDF(companyFolder, pdfname,announcement['adjunctUrl'])
                 
+                #save info in Json
                 savedInfo['secCode'] = announcement['secCode']
                 savedInfo['secName'] = announcement['secName']
                 savedInfo['announcementTitle'] = announcement['announcementTitle']
@@ -108,8 +114,6 @@ class CninfoSpider(Spider):
                 savedInfo['pdfPath'] = pdfPath
                 savedInfo['announcementTime'] = announcement['announcementTime']
                 #savedInfo['announcementTime'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(announcement['announcementTime']))
-                
-                #save info in Json
                 if not self.isInfoInJson(savedInfo):
                     try:
                         savedInfofileread = codecs.open(self.savedInfoFile,'rb','utf-8')
@@ -135,17 +139,22 @@ class CninfoSpider(Spider):
             yield Request(self.generateUrl(startUrl, '', 1, jsonStockIndex), callback=self.parse, meta={'jsonStockIndex':jsonStockIndex}) 
 
     def createCompanyFolder(self, secCode):
-        companyFolder = self.financialFolder + '\\' + secCode
+        if "Windows" == platform.system():
+            companyFolder = self.financialFolder + '\\' + secCode
+        else:
+            companyFolder = self.financialFolder + '/' + secCode
         if not os.path.exists(companyFolder):
             os.mkdir(companyFolder)
-        else:
-            print 'WRN: ', companyFolder, 'is already exists'
         return companyFolder
             
     def downloadPDF(self, companyFolder, reportName, downloadURL):
-        pdfPath = companyFolder + '\\' + reportName + '.pdf'
+        if "Windows" == platform.system():
+            pdfPath = companyFolder + '\\' + reportName + '.pdf'
+        else:
+            pdfPath = companyFolder + '/' + reportName + '.pdf'
+        
         realURL = self.homePage + "/" + downloadURL
-        print pdfPath, realURL
+        print "Download PDF. pdfPath:", pdfPath, ' realURL:',realURL
         try:
             if not os.path.exists(pdfPath):
                 urllib.urlretrieve(realURL, pdfPath)
@@ -188,6 +197,48 @@ class CninfoSpider(Spider):
             print "isNeedAnnouncementTitle: True"
             return True
         
+    def createFinancialDataFolder(self):
+        sysstr = platform.system()
+        if(sysstr =="Windows"):
+            print "!!!Windows"
+            self.financialFolder = r'D:\financialdata'
+            self.savedInfoFile = self.financialFolder + '\\' + 'stockreportlist.json'
+            failReportPath = self.financialFolder + '\\' + 'szse_stock_failList.json'
+        elif(sysstr == "Linux"):
+            print "!!Linux"
+            self.financialFolder = r'/home/xproject/financialdata' 
+            self.savedInfoFile = self.financialFolder + '/' + 'stockreportlist.json'       
+            failReportPath = self.financialFolder + '/' + 'szse_stock_failList' + '.json'                       
+        else:
+            print "Other System tasks"
         
+        if (False == os.path.exists(self.financialFolder)):
+            os.makedirs(self.financialFolder)
         
-        
+        if (False == os.path.exists(self.savedInfoFile)):
+            f= codecs.open(self.savedInfoFile,'w','utf-8')
+            writeData = '{"stockList":[]}'
+            f.write(writeData)
+            f.close()
+            
+        if (False == os.path.exists(failReportPath)):
+            f= codecs.open(failReportPath,'w','utf-8')
+            writeData = '{"stockList":[]}'
+            f.write(writeData)
+            f.close()
+            
+            
+    def downloadAllStockJson(self):
+        if "Windows" == platform.system():
+            allStockJsonPath = self.financialFolder + '\\' + 'szse_stock.json'
+            
+        else:
+            allStockJsonPath = self.financialFolder + '/' + 'szse_stock.json'
+
+        print "!!!!!!allStockJsonPath:",allStockJsonPath 
+        try:
+            urllib.urlretrieve(self.allstockjson_url, allStockJsonPath)
+            return allStockJsonPath
+        except IOError:
+            print "DownLoad AllStockJson fail"
+            return None
