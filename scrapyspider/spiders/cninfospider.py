@@ -57,6 +57,7 @@ class CninfoSpider(Spider):
             orgId=jsonSzse_stocks['stockList'][jsonStockIndex]['orgId']
             stock=jsonSzse_stocks['stockList'][jsonStockIndex]['code']+'%2C'+jsonSzse_stocks['stockList'][jsonStockIndex]['orgId']
             pageNum=1
+            print "aaaaaaaaaaaaaaaaaaa",code,orgId,stock
             yield Request(self.generateUrl(queryUrl,stock,pageNum,jsonStockIndex), callback=self.parseDetail,meta={'code':code,'orgId':orgId,'pageNum':pageNum,'jsonStockIndex':jsonStockIndex}) 
         elif (jsonStockIndex==self.stockCodeSumNum):
             print '====================================='
@@ -71,7 +72,7 @@ class CninfoSpider(Spider):
     def parseDetail(self, response): 
         filename = 'result\szse_stock_failList.json'
         queryUrl='http://www.cninfo.com.cn/cninfo-new/announcement/query'
-        startUrl='http://www.cninfo.com.cn/cninfo-new/announcement/show'
+        startUrl='http://www.cninfo.com.cn/cninfo-new/disclosure/szse_main'
         print "********* enter parseDetail",response.url
         #filename = response.url.split("/")[-2]
         #open(filename, 'wb').write(response.body)

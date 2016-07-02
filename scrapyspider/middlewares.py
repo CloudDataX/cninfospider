@@ -24,7 +24,6 @@ class CninfoGetAnnouncementMiddleware(object):
             outputResult = open(filename, 'wb')
             outputResult.write('{"stockList":[]}')
             outputResult.close()
-            print "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"
     @classmethod
     def from_crawler(cls, crawler):
         return cls(
