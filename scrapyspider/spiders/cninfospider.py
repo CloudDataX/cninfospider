@@ -16,7 +16,8 @@ import urllib
 import re
 import codecs
 import platform
-
+import socket
+import logging
 
 class CninfoSpider(Spider):  
     name = "cninfo"  
@@ -28,7 +29,9 @@ class CninfoSpider(Spider):
     financialFolder = ''
     savedInfoFile = ''
     savedStockSumNum = 0
-    
+    downloadPdfFailLists=''
+    socket.setdefaulttimeout(60)
+    logger = logging.getLogger('CninfoCninfoSpiderLogger')
     def GetJsonStockIndex(self,response):
         if('jsonStockIndex='==response.body[0:len('jsonStockIndex=')]):
             print '==============GetJsonStockIndex:',response.body, response.body[len('jsonStockIndex='):len(response.body)]
@@ -50,14 +53,14 @@ class CninfoSpider(Spider):
         if self.stockNumsInAllStockJson == 0:
             for jsonSzse_stock in jsonSzse_stocks['stockList']:
                 self.stockNumsInAllStockJson=self.stockNumsInAllStockJson+1
-                    
+            jsonStockIndex=80
+            
         if(0<=jsonStockIndex and jsonStockIndex<self.stockNumsInAllStockJson):      
               
             code=jsonSzse_stocks['stockList'][jsonStockIndex]['code']
             orgId=jsonSzse_stocks['stockList'][jsonStockIndex]['orgId']
             stock=jsonSzse_stocks['stockList'][jsonStockIndex]['code']+'%2C'+jsonSzse_stocks['stockList'][jsonStockIndex]['orgId']
             pageNum=1
-            print "aaaaaaaaaaaaaaaaaaa",code,orgId,stock
             yield Request(self.generateUrl(queryUrl,stock,pageNum,jsonStockIndex), callback=self.parseDetail,meta={'code':code,'orgId':orgId,'pageNum':pageNum,'jsonStockIndex':jsonStockIndex}) 
         elif (jsonStockIndex==self.stockCodeSumNum):
             print '====================================='
@@ -162,9 +165,17 @@ class CninfoSpider(Spider):
             else:
                 print 'WRN: ', reportName, '.pdf is already exists'
                 return pdfPath
-        except IOError:
+        except Exception, e:
+            self.logger.warning(e)
+            errorStr='Download PDF error! pdfPath:'+pdfPath+'realURL:'+realURL
+            self.logger.info(errorStr)
+            outputDownloadPdfFailLists = codecs.open(self.downloadPdfFailLists, 'a','utf-8')
+            outputDownloadPdfFailLists.write('\n')
+            outputDownloadPdfFailLists.write(errorStr)
+            outputDownloadPdfFailLists.close()
             print "ERROR: save pdf fail"
-            return None
+            urllib.urlcleanup()
+            return self.downloadPDF(companyFolder, reportName, downloadURL)
         return pdfPath
 
     def isInfoInJson(self, announcement):
@@ -206,11 +217,13 @@ class CninfoSpider(Spider):
             self.financialFolder = r'D:\financialdata'
             self.savedInfoFile = self.financialFolder + '\\' + 'stockreportlist.json'
             failReportPath = self.financialFolder + '\\' + 'szse_stock_failList.json'
+            self.downloadPdfFailLists = self.financialFolder + '\\' + 'downloadPdfFailLists.txt'
         elif(sysstr == "Linux"):
             print "!!Linux"
             self.financialFolder = r'/home/xproject/financialdata' 
             self.savedInfoFile = self.financialFolder + '/' + 'stockreportlist.json'       
-            failReportPath = self.financialFolder + '/' + 'szse_stock_failList' + '.json'                       
+            failReportPath = self.financialFolder + '/' + 'szse_stock_failList' + '.json'     
+            self.downloadPdfFailLists = self.financialFolder + '/' + 'downloadPdfFailLists.txt'                
         else:
             print "Other System tasks"
         
@@ -226,6 +239,11 @@ class CninfoSpider(Spider):
         if (False == os.path.exists(failReportPath)):
             f= codecs.open(failReportPath,'w','utf-8')
             writeData = '{"stockList":[]}'
+            f.write(writeData)
+            f.close()
+        if(False==os.path.exists(self.downloadPdfFailLists)):
+            f= codecs.open(self.downloadPdfFailLists,'w','utf-8')
+            writeData = 'downloadPdfFailLists:'
             f.write(writeData)
             f.close()
             
