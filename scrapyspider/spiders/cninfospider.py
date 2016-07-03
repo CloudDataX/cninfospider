@@ -200,6 +200,7 @@ class CninfoSpider(Spider):
         
     def createFinancialDataFolder(self):
         sysstr = platform.system()
+        failReportPath =""
         if(sysstr =="Windows"):
             print "!!!Windows"
             self.financialFolder = r'D:\financialdata'

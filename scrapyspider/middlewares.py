@@ -17,13 +17,13 @@ class CninfoGetAnnouncementMiddleware(object):
         self.options = options
         self.max_sum = max_sum
         
-        filename = 'result\szse_stock_failList.json'
+        #filename = 'result\szse_stock_failList.json'
         #remove result files at begiin
-        if (os.path.isfile(filename)):
-            os.remove(filename)
-            outputResult = open(filename, 'wb')
-            outputResult.write('{"stockList":[]}')
-            outputResult.close()
+        #if (os.path.isfile(filename)):
+        #    os.remove(filename)
+        #    outputResult = open(filename, 'wb')
+        #    outputResult.write('{"stockList":[]}')
+        #    outputResult.close()
     @classmethod
     def from_crawler(cls, crawler):
         return cls(
