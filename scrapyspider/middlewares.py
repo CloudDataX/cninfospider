@@ -87,7 +87,7 @@ class CninfoGetAnnouncementMiddleware(object):
             logger.warning(e)
             logger.info('******process_request fail : 504')
             filename = '/home/xproject/financialdata/szse_stock_failList.json'
-            srcStockfilename='szse_stock.json'
+            srcStockfilename='/home/xproject/financialdata/szse_stock.json'
             outputResult=open(filename).read()
             outputFile=open(filename,'w')         
             try:                

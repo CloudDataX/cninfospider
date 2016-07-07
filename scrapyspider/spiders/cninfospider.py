@@ -18,6 +18,7 @@ import codecs
 import platform
 import socket
 import logging
+import gc
 
 class CninfoSpider(Spider):  
     name = "cninfo"  
@@ -30,8 +31,9 @@ class CninfoSpider(Spider):
     savedInfoFile = ''
     savedStockSumNum = 0
     downloadPdfFailLists=''
-    socket.setdefaulttimeout(60)
+    socket.setdefaulttimeout(35)
     logger = logging.getLogger('CninfoCninfoSpiderLogger')
+    jsonSzse_stocks=''
     def GetJsonStockIndex(self,response):
         if('jsonStockIndex='==response.body[0:len('jsonStockIndex=')]):
             print '==============GetJsonStockIndex:',response.body, response.body[len('jsonStockIndex='):len(response.body)]
@@ -44,22 +46,23 @@ class CninfoSpider(Spider):
     
     def parse(self, response):
         self.createFinancialDataFolder() 
-        allStockJsonPath = self.downloadAllStockJson()
+        allStockJsonPath = self.downloadAllStockJson(False)
         queryUrl='http://www.cninfo.com.cn/cninfo-new/announcement/query'
         jsonStockIndex = self.GetJsonStockIndex(response)
         print "start get stock data,jsonStockIndex=",jsonStockIndex,'self.stockNumsInAllStockJson:',self.stockNumsInAllStockJson
         
-        jsonSzse_stocks=json.loads(open(allStockJsonPath, 'rb').read())
         if self.stockNumsInAllStockJson == 0:
-            for jsonSzse_stock in jsonSzse_stocks['stockList']:
+            allStockJsonPath = self.downloadAllStockJson(True)
+            self.jsonSzse_stocks=json.loads(open(allStockJsonPath, 'rb').read())
+            for jsonSzse_stock in self.jsonSzse_stocks['stockList']:
                 self.stockNumsInAllStockJson=self.stockNumsInAllStockJson+1
-            jsonStockIndex=80
+            jsonStockIndex=1876
             
         if(0<=jsonStockIndex and jsonStockIndex<self.stockNumsInAllStockJson):      
               
-            code=jsonSzse_stocks['stockList'][jsonStockIndex]['code']
-            orgId=jsonSzse_stocks['stockList'][jsonStockIndex]['orgId']
-            stock=jsonSzse_stocks['stockList'][jsonStockIndex]['code']+'%2C'+jsonSzse_stocks['stockList'][jsonStockIndex]['orgId']
+            code=self.jsonSzse_stocks['stockList'][jsonStockIndex]['code']
+            orgId=self.jsonSzse_stocks['stockList'][jsonStockIndex]['orgId']
+            stock=self.jsonSzse_stocks['stockList'][jsonStockIndex]['code']+'%2C'+self.jsonSzse_stocks['stockList'][jsonStockIndex]['orgId']
             pageNum=1
             yield Request(self.generateUrl(queryUrl,stock,pageNum,jsonStockIndex), callback=self.parseDetail,meta={'code':code,'orgId':orgId,'pageNum':pageNum,'jsonStockIndex':jsonStockIndex}) 
         elif (jsonStockIndex==self.stockCodeSumNum):
@@ -134,7 +137,7 @@ class CninfoSpider(Spider):
             print "parseDetail: ########################################################"
             if(pageSumNums>pageNum):#go to read next page of current stock code
                 pageNum=pageNum+1
-                print "parseDetail: get next page:",str(pageNum),"pageSumNums:",str(pageSumNums)
+                print "parseDetail: get next page:",str(pageNum),"pageSumNums:",str(pageSumNums),"jsonStockIndex:",str(jsonStockIndex)
                 yield Request(self.generateUrl(queryUrl,stock,pageNum,jsonStockIndex), callback=self.parseDetail,meta={'code':code,'orgId':orgId,'pageNum':pageNum,'jsonStockIndex':jsonStockIndex}) 
             else:#go to read next stock code
                 yield Request(self.generateUrl(startUrl, '', 1, jsonStockIndex+1), callback=self.parse, meta={'jsonStockIndex':jsonStockIndex+1}) 
@@ -173,9 +176,11 @@ class CninfoSpider(Spider):
             outputDownloadPdfFailLists.write('\n')
             outputDownloadPdfFailLists.write(errorStr)
             outputDownloadPdfFailLists.close()
-            print "ERROR: save pdf fail"
             urllib.urlcleanup()
             return self.downloadPDF(companyFolder, reportName, downloadURL)
+        
+        urllib.urlcleanup()
+        gc.collect()
         return pdfPath
 
     def isInfoInJson(self, announcement):
@@ -248,13 +253,15 @@ class CninfoSpider(Spider):
             f.close()
             
             
-    def downloadAllStockJson(self):
+    def downloadAllStockJson(self,isNeedDownload):
         if "Windows" == platform.system():
             allStockJsonPath = self.financialFolder + '\\' + 'szse_stock.json'
             
         else:
             allStockJsonPath = self.financialFolder + '/' + 'szse_stock.json'
-
+        
+        if(False==isNeedDownload):
+            return allStockJsonPath
         print "!!!!!!allStockJsonPath:",allStockJsonPath 
         try:
             urllib.urlretrieve(self.allstockjson_url, allStockJsonPath)
