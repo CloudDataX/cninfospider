@@ -19,7 +19,8 @@ import platform
 import socket
 import logging
 import gc
-from scrapyspider import SysStr,ProcessIndex,StockStartIndex,StockEndIndex,FinancialFolder,SavedInfoFile,FailReportPath,DownloadPdfFailLists
+from scrapyspider import SysStr,ProcessIndex,StockStartIndex,StockEndIndex,FinancialFolder
+from scrapyspider import SavedInfoFile,FailReportPath,DownloadPdfFailLists,SzseStockFile
 
 class CninfoSpider(Spider):  
     name = "cninfo"  
@@ -28,11 +29,10 @@ class CninfoSpider(Spider):
     allstockjson_url = "http://www.cninfo.com.cn/cninfo-new/js/data/szse_stock.json"
     stockNumsInAllStockJson = 0
     homePage = r"http://www.cninfo.com.cn"  
-    savedStockSumNum = 0
-    downloadPdfFailLists=''
+
     socket.setdefaulttimeout(35)
     logger = logging.getLogger('CninfoCninfoSpiderLogger')
-    jsonSzse_stocks=''
+
     def GetJsonStockIndex(self,response):
         if('jsonStockIndex='==response.body[0:len('jsonStockIndex=')]):
             print '==============GetJsonStockIndex:',response.body, response.body[len('jsonStockIndex='):len(response.body)]
@@ -44,23 +44,23 @@ class CninfoSpider(Spider):
         return url+'?stock='+stock+'&pageNum='+str(pageNum)+'&jsonStockIndex='+str(jsonStockIndex)
     
     def parse(self, response):
-        allStockJsonPath = self.downloadAllStockJson(False)
+        SzseStockFile = self.downloadAllStockJson(False)
         queryUrl='http://www.cninfo.com.cn/cninfo-new/announcement/query'
         jsonStockIndex = self.GetJsonStockIndex(response)
         
         if self.stockNumsInAllStockJson == 0:
-            allStockJsonPath = self.downloadAllStockJson(True)
-            self.jsonSzse_stocks=json.loads(open(allStockJsonPath, 'rb').read())
-            for jsonSzse_stock in self.jsonSzse_stocks['stockList']:
+            SzseStockFile = self.downloadAllStockJson(True)
+            jsonSzse_stocks=json.loads(open(SzseStockFile, 'rb').read())
+            for jsonSzse_stock in jsonSzse_stocks['stockList']:
                 self.stockNumsInAllStockJson=self.stockNumsInAllStockJson+1
             jsonStockIndex=StockStartIndex
         print "start get stock data,jsonStockIndex=",jsonStockIndex,'self.stockNumsInAllStockJson:',self.stockNumsInAllStockJson
                     
         if(StockStartIndex<=jsonStockIndex and jsonStockIndex<min(self.stockNumsInAllStockJson, StockEndIndex)):      
               
-            code=self.jsonSzse_stocks['stockList'][jsonStockIndex]['code']
-            orgId=self.jsonSzse_stocks['stockList'][jsonStockIndex]['orgId']
-            stock=self.jsonSzse_stocks['stockList'][jsonStockIndex]['code']+'%2C'+self.jsonSzse_stocks['stockList'][jsonStockIndex]['orgId']
+            code=jsonSzse_stocks['stockList'][jsonStockIndex]['code']
+            orgId=jsonSzse_stocks['stockList'][jsonStockIndex]['orgId']
+            stock=jsonSzse_stocks['stockList'][jsonStockIndex]['code']+'%2C'+jsonSzse_stocks['stockList'][jsonStockIndex]['orgId']
             pageNum=1
             yield Request(self.generateUrl(queryUrl,stock,pageNum,jsonStockIndex), callback=self.parseDetail,meta={'code':code,'orgId':orgId,'pageNum':pageNum,'jsonStockIndex':jsonStockIndex}) 
         elif (jsonStockIndex==self.stockNumsInAllStockJson):
@@ -116,7 +116,7 @@ class CninfoSpider(Spider):
                     errorStr = errorStr + ",adjunctUrl:"+announcement['adjunctUrl']
                     print "ERR:", errorStr
                     self.logger.info(errorStr)
-                    outputDownloadPdfFailLists = codecs.open(self.downloadPdfFailLists, 'a','utf-8')
+                    outputDownloadPdfFailLists = codecs.open(DownloadPdfFailLists, 'a','utf-8')
                     outputDownloadPdfFailLists.write('\n')
                     outputDownloadPdfFailLists.write(errorStr)
                     outputDownloadPdfFailLists.close()
@@ -194,14 +194,15 @@ class CninfoSpider(Spider):
         return pdfPath
 
     def isInfoInJson(self, announcement):
+        savedStockSumNum = 0
         try:
-            savedInfofile=json.loads(codecs.open(self.savedInfoFile,'r','utf-8').read())
+            savedInfofile=json.loads(codecs.open(SavedInfoFile,'r','utf-8').read())
             
             if 5 > len(savedInfofile["stockList"]):
                 return False
             else:
                 for jsonSzse_stock in savedInfofile['stockList']:
-                    self.savedStockSumNum=self.savedStockSumNum+1
+                    savedStockSumNum = savedStockSumNum+1
                 print "-------------",len(savedInfofile['stockList'])
                 for index in range(self.savedStockSumNum):
                     if savedInfofile["stockList"][index]['secCode'] == announcement['secCode'] and savedInfofile["stockList"][index]['announcementTitle'] == announcement['announcementTitle']:

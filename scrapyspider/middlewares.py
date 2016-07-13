@@ -11,7 +11,7 @@ from urllib import urlencode
 from urllib import unquote
 import json
 import os
-from scrapyspider import FailReportPath
+from scrapyspider import FailReportPath,SzseStockFile
 
 logger = logging.getLogger('CninfoGetAnnouncementMiddleware')
 class CninfoGetAnnouncementMiddleware(object):
@@ -88,7 +88,7 @@ class CninfoGetAnnouncementMiddleware(object):
         except Exception, e:
             logger.warning(e)
             logger.info('******process_request fail : 504')
-            srcStockfilename='/home/xproject/financialdata/szse_stock.json'
+            
             outputResultFile=open(FailReportPath)
             outputResult=outputResultFile.read()
             outputFile=open(FailReportPath,'w')         
@@ -97,11 +97,11 @@ class CninfoGetAnnouncementMiddleware(object):
                 if(20<len(outputResult)):
                     outputResult=outputResult+','
                 if(None!=request.meta.get('jsonStockIndex', None)):                    
-                    jsonSzse_stocks=json.loads(open(srcStockfilename, 'rb').read())
+                    jsonSzse_stocks=json.loads(open(SzseStockFile, 'rb').read())
                     errorStockStr=json.dumps(jsonSzse_stocks['stockList'][request.meta['jsonStockIndex']])
                     outputResult=outputResult+errorStockStr+']}'
                 else:
-                    jsonSzse_stocks=json.loads(open(srcStockfilename, 'rb').read())
+                    jsonSzse_stocks=json.loads(open(SzseStockFile, 'rb').read())
                     errorStockStr=json.dumps(jsonSzse_stocks['stockList'][0])
                     outputResult=outputResult+errorStockStr+']}'
                 outputFile.write(outputResult)

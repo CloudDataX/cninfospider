@@ -11,6 +11,7 @@ SavedInfoFile = ''
 FailReportPath = ''
 ProcessIndex = 1
 DownloadPdfFailLists = ''
+SzseStockFile = ''
 
 if(SysStr =="Windows"):
     FinancialFolder = r'D:\financialdata' + '\\'
