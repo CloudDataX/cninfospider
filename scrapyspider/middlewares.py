@@ -88,7 +88,8 @@ class CninfoGetAnnouncementMiddleware(object):
             logger.info('******process_request fail : 504')
             filename = '/home/xproject/financialdata/szse_stock_failList.json'
             srcStockfilename='/home/xproject/financialdata/szse_stock.json'
-            outputResult=open(filename).read()
+            outputResultFile=open(filename)
+            outputResult=outputResultFile.read()
             outputFile=open(filename,'w')         
             try:                
                 outputResult=outputResult[:-2] #delete last two char
@@ -105,7 +106,7 @@ class CninfoGetAnnouncementMiddleware(object):
                 outputFile.write(outputResult)
             finally:  
                 outputFile.close()
-            
+                outputResultFile.close()
             if(None==request.meta.get('jsonStockIndex', None)):
                 jsonStockIndex=1
             else:

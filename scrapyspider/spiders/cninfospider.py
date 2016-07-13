@@ -56,7 +56,7 @@ class CninfoSpider(Spider):
             self.jsonSzse_stocks=json.loads(open(allStockJsonPath, 'rb').read())
             for jsonSzse_stock in self.jsonSzse_stocks['stockList']:
                 self.stockNumsInAllStockJson=self.stockNumsInAllStockJson+1
-            jsonStockIndex=1876
+            jsonStockIndex=3088
             
         if(0<=jsonStockIndex and jsonStockIndex<self.stockNumsInAllStockJson):      
               
@@ -65,7 +65,7 @@ class CninfoSpider(Spider):
             stock=self.jsonSzse_stocks['stockList'][jsonStockIndex]['code']+'%2C'+self.jsonSzse_stocks['stockList'][jsonStockIndex]['orgId']
             pageNum=1
             yield Request(self.generateUrl(queryUrl,stock,pageNum,jsonStockIndex), callback=self.parseDetail,meta={'code':code,'orgId':orgId,'pageNum':pageNum,'jsonStockIndex':jsonStockIndex}) 
-        elif (jsonStockIndex==self.stockCodeSumNum):
+        elif (jsonStockIndex==self.stockNumsInAllStockJson):
             print '====================================='
             print 'fetch stock data finished,please check if have fail lists in result/szse_stock_failList.json'
             print '====================================='
@@ -111,14 +111,22 @@ class CninfoSpider(Spider):
                     pdfname = announcement['announcementTitle']
                 else:
                     pdfname = announcement["secName"]+announcement['announcementTitle']
-                pdfPath = self.downloadPDF(companyFolder, pdfname,announcement['adjunctUrl'])
-                
+                filePath = self.downloadPDF(companyFolder, pdfname,announcement['adjunctUrl'], 5)
+                if filePath == False:
+                    print "Save download failed file info"
+                    #print "ERR:", errorStr
+                    #self.logger.info(errorStr)
+                    #outputDownloadPdfFailLists = codecs.open(self.downloadPdfFailLists, 'a','utf-8')
+                    #outputDownloadPdfFailLists.write('\n')
+                    #outputDownloadPdfFailLists.write(errorStr)
+                    #outputDownloadPdfFailLists.close()
+                    
                 #save info in Json
                 savedInfo['secCode'] = announcement['secCode']
                 savedInfo['secName'] = announcement['secName']
                 savedInfo['announcementTitle'] = announcement['announcementTitle']
                 savedInfo['adjunctUrl'] = announcement['adjunctUrl']
-                savedInfo['pdfPath'] = pdfPath
+                savedInfo['pdfPath'] = filePath
                 savedInfo['announcementTime'] = announcement['announcementTime']
                 #savedInfo['announcementTime'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(announcement['announcementTime']))
                 if not self.isInfoInJson(savedInfo):
@@ -133,7 +141,7 @@ class CninfoSpider(Spider):
                         savedInfofilewrite.write(writedata)
                     finally:
                         savedInfofilewrite.close()
-            
+                        savedInfofileread.close()
             print "parseDetail: ########################################################"
             if(pageSumNums>pageNum):#go to read next page of current stock code
                 pageNum=pageNum+1
@@ -154,30 +162,35 @@ class CninfoSpider(Spider):
             os.mkdir(companyFolder)
         return companyFolder
             
-    def downloadPDF(self, companyFolder, reportName, downloadURL):
+    def downloadPDF(self, companyFolder, reportName, downloadURL, downloadTime):
+        downloadTime -= 1
+        if downloadTime == 0:
+            return False
+        
+        suffix = downloadURL[downloadURL.find('.'):].lower()
+        print "downloadPDF suffix", suffix
+        
         if "Windows" == platform.system():
             pdfPath = companyFolder + '\\' + reportName + '.pdf'
+            filePath = companyFolder + '\\' + reportName + suffix
         else:
             pdfPath = companyFolder + '/' + reportName + '.pdf'
-        
+            filePath = companyFolder + '/' + reportName + suffix
+                     
+        if ".pdf" != suffix and os.path.exists(pdfPath):
+            os.remove(pdfPath)
+              
         realURL = self.homePage + "/" + downloadURL
-        print "Download PDF. pdfPath:", pdfPath, ' realURL:',realURL
+        print "Download pdfPath:", filePath, ' realURL:',realURL
         try:
-            if not os.path.exists(pdfPath):
-                urllib.urlretrieve(realURL, pdfPath)
+            if not os.path.exists(filePath):
+                urllib.urlretrieve(realURL, filePath)
             else:
-                print 'WRN: ', reportName, '.pdf is already exists'
-                return pdfPath
+                print 'WRN: ', filePath, 'is already exists'
+                return filePath
         except Exception, e:
-            self.logger.warning(e)
-            errorStr='Download PDF error! pdfPath:'+pdfPath+'realURL:'+realURL
-            self.logger.info(errorStr)
-            outputDownloadPdfFailLists = codecs.open(self.downloadPdfFailLists, 'a','utf-8')
-            outputDownloadPdfFailLists.write('\n')
-            outputDownloadPdfFailLists.write(errorStr)
-            outputDownloadPdfFailLists.close()
             urllib.urlcleanup()
-            return self.downloadPDF(companyFolder, reportName, downloadURL)
+            return self.downloadPDF(companyFolder, reportName, downloadURL, downloadTime)
         
         urllib.urlcleanup()
         gc.collect()
