@@ -11,6 +11,8 @@ from urllib import urlencode
 from urllib import unquote
 import json
 import os
+from scrapyspider import FailReportPath
+
 logger = logging.getLogger('CninfoGetAnnouncementMiddleware')
 class CninfoGetAnnouncementMiddleware(object):
     def __init__(self, options, max_sum):
@@ -86,11 +88,10 @@ class CninfoGetAnnouncementMiddleware(object):
         except Exception, e:
             logger.warning(e)
             logger.info('******process_request fail : 504')
-            filename = '/home/xproject/financialdata/szse_stock_failList.json'
             srcStockfilename='/home/xproject/financialdata/szse_stock.json'
-            outputResultFile=open(filename)
+            outputResultFile=open(FailReportPath)
             outputResult=outputResultFile.read()
-            outputFile=open(filename,'w')         
+            outputFile=open(FailReportPath,'w')         
             try:                
                 outputResult=outputResult[:-2] #delete last two char
                 if(20<len(outputResult)):

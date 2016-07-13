@@ -19,6 +19,7 @@ import platform
 import socket
 import logging
 import gc
+from scrapyspider import SysStr,ProcessIndex,StockStartIndex,StockEndIndex,FinancialFolder,SavedInfoFile,FailReportPath,DownloadPdfFailLists
 
 class CninfoSpider(Spider):  
     name = "cninfo"  
@@ -27,8 +28,6 @@ class CninfoSpider(Spider):
     allstockjson_url = "http://www.cninfo.com.cn/cninfo-new/js/data/szse_stock.json"
     stockNumsInAllStockJson = 0
     homePage = r"http://www.cninfo.com.cn"  
-    financialFolder = ''
-    savedInfoFile = ''
     savedStockSumNum = 0
     downloadPdfFailLists=''
     socket.setdefaulttimeout(35)
@@ -45,20 +44,19 @@ class CninfoSpider(Spider):
         return url+'?stock='+stock+'&pageNum='+str(pageNum)+'&jsonStockIndex='+str(jsonStockIndex)
     
     def parse(self, response):
-        self.createFinancialDataFolder() 
         allStockJsonPath = self.downloadAllStockJson(False)
         queryUrl='http://www.cninfo.com.cn/cninfo-new/announcement/query'
         jsonStockIndex = self.GetJsonStockIndex(response)
-        print "start get stock data,jsonStockIndex=",jsonStockIndex,'self.stockNumsInAllStockJson:',self.stockNumsInAllStockJson
         
         if self.stockNumsInAllStockJson == 0:
             allStockJsonPath = self.downloadAllStockJson(True)
             self.jsonSzse_stocks=json.loads(open(allStockJsonPath, 'rb').read())
             for jsonSzse_stock in self.jsonSzse_stocks['stockList']:
                 self.stockNumsInAllStockJson=self.stockNumsInAllStockJson+1
-            jsonStockIndex=3088
-            
-        if(0<=jsonStockIndex and jsonStockIndex<self.stockNumsInAllStockJson):      
+            jsonStockIndex=StockStartIndex
+        print "start get stock data,jsonStockIndex=",jsonStockIndex,'self.stockNumsInAllStockJson:',self.stockNumsInAllStockJson
+                    
+        if(StockStartIndex<=jsonStockIndex and jsonStockIndex<min(self.stockNumsInAllStockJson, StockEndIndex)):      
               
             code=self.jsonSzse_stocks['stockList'][jsonStockIndex]['code']
             orgId=self.jsonSzse_stocks['stockList'][jsonStockIndex]['orgId']
@@ -114,12 +112,14 @@ class CninfoSpider(Spider):
                 filePath = self.downloadPDF(companyFolder, pdfname,announcement['adjunctUrl'], 5)
                 if filePath == False:
                     print "Save download failed file info"
-                    #print "ERR:", errorStr
-                    #self.logger.info(errorStr)
-                    #outputDownloadPdfFailLists = codecs.open(self.downloadPdfFailLists, 'a','utf-8')
-                    #outputDownloadPdfFailLists.write('\n')
-                    #outputDownloadPdfFailLists.write(errorStr)
-                    #outputDownloadPdfFailLists.close()
+                    errorStr = "code:"+code+",jsonStockIndex:"+str(jsonStockIndex)+",pdfname:"+pdfname
+                    errorStr = errorStr + ",adjunctUrl:"+announcement['adjunctUrl']
+                    print "ERR:", errorStr
+                    self.logger.info(errorStr)
+                    outputDownloadPdfFailLists = codecs.open(self.downloadPdfFailLists, 'a','utf-8')
+                    outputDownloadPdfFailLists.write('\n')
+                    outputDownloadPdfFailLists.write(errorStr)
+                    outputDownloadPdfFailLists.close()
                     
                 #save info in Json
                 savedInfo['secCode'] = announcement['secCode']
@@ -131,13 +131,13 @@ class CninfoSpider(Spider):
                 #savedInfo['announcementTime'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(announcement['announcementTime']))
                 if not self.isInfoInJson(savedInfo):
                     try:
-                        savedInfofileread = codecs.open(self.savedInfoFile,'rb','utf-8')
+                        savedInfofileread = codecs.open(SavedInfoFile,'rb','utf-8')
                         readdata = savedInfofileread.read()[:-2]
                         if(20<len(readdata)):
                             readdata=readdata+','
                         writedata = json.dumps(savedInfo,ensure_ascii=False,indent=2)
                         writedata = readdata+writedata+']}'
-                        savedInfofilewrite = codecs.open(self.savedInfoFile,'w','utf-8')
+                        savedInfofilewrite = codecs.open(SavedInfoFile,'w','utf-8')
                         savedInfofilewrite.write(writedata)
                     finally:
                         savedInfofilewrite.close()
@@ -154,10 +154,7 @@ class CninfoSpider(Spider):
             yield Request(self.generateUrl(startUrl, '', 1, jsonStockIndex), callback=self.parse, meta={'jsonStockIndex':jsonStockIndex}) 
 
     def createCompanyFolder(self, secCode):
-        if "Windows" == platform.system():
-            companyFolder = self.financialFolder + '\\' + secCode
-        else:
-            companyFolder = self.financialFolder + '/' + secCode
+        companyFolder = FinancialFolder + secCode
         if not os.path.exists(companyFolder):
             os.mkdir(companyFolder)
         return companyFolder
@@ -170,11 +167,11 @@ class CninfoSpider(Spider):
         suffix = downloadURL[downloadURL.find('.'):].lower()
         print "downloadPDF suffix", suffix
         
-        if "Windows" == platform.system():
-            pdfPath = companyFolder + '\\' + reportName + '.pdf'
+        if SysStr == "Windows":
+            pdfPath = companyFolder + '\\'+ reportName + '.pdf'
             filePath = companyFolder + '\\' + reportName + suffix
         else:
-            pdfPath = companyFolder + '/' + reportName + '.pdf'
+            pdfPath = companyFolder + '/'+ reportName + '.pdf'
             filePath = companyFolder + '/' + reportName + suffix
                      
         if ".pdf" != suffix and os.path.exists(pdfPath):
@@ -226,52 +223,10 @@ class CninfoSpider(Spider):
         else:
             print "isNeedAnnouncementTitle: True"
             return True
-        
-    def createFinancialDataFolder(self):
-        sysstr = platform.system()
-        failReportPath =""
-        if(sysstr =="Windows"):
-            print "!!!Windows"
-            self.financialFolder = r'D:\financialdata'
-            self.savedInfoFile = self.financialFolder + '\\' + 'stockreportlist.json'
-            failReportPath = self.financialFolder + '\\' + 'szse_stock_failList.json'
-            self.downloadPdfFailLists = self.financialFolder + '\\' + 'downloadPdfFailLists.txt'
-        elif(sysstr == "Linux"):
-            print "!!Linux"
-            self.financialFolder = r'/home/xproject/financialdata' 
-            self.savedInfoFile = self.financialFolder + '/' + 'stockreportlist.json'       
-            failReportPath = self.financialFolder + '/' + 'szse_stock_failList' + '.json'     
-            self.downloadPdfFailLists = self.financialFolder + '/' + 'downloadPdfFailLists.txt'                
-        else:
-            print "Other System tasks"
-        
-        if (False == os.path.exists(self.financialFolder)):
-            os.makedirs(self.financialFolder)
-        
-        if (False == os.path.exists(self.savedInfoFile)):
-            f= codecs.open(self.savedInfoFile,'w','utf-8')
-            writeData = '{"stockList":[]}'
-            f.write(writeData)
-            f.close()
-            
-        if (False == os.path.exists(failReportPath)):
-            f= codecs.open(failReportPath,'w','utf-8')
-            writeData = '{"stockList":[]}'
-            f.write(writeData)
-            f.close()
-        if(False==os.path.exists(self.downloadPdfFailLists)):
-            f= codecs.open(self.downloadPdfFailLists,'w','utf-8')
-            writeData = 'downloadPdfFailLists:'
-            f.write(writeData)
-            f.close()
-            
+          
             
     def downloadAllStockJson(self,isNeedDownload):
-        if "Windows" == platform.system():
-            allStockJsonPath = self.financialFolder + '\\' + 'szse_stock.json'
-            
-        else:
-            allStockJsonPath = self.financialFolder + '/' + 'szse_stock.json'
+        allStockJsonPath = FinancialFolder + 'szse_stock.json'
         
         if(False==isNeedDownload):
             return allStockJsonPath
