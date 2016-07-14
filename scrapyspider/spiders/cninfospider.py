@@ -220,22 +220,19 @@ class CninfoSpider(Spider):
         filter2 = announcementTitle.find(u"英文版")
         filter3 = announcementTitle.find(u"正文")
         if filter1 != -1 or filter2 != -1 or filter3 != -1:
-            print "isNeedAnnouncementTitle: False"
+            print "This is not needed file: False"
             return False
         else:
-            print "isNeedAnnouncementTitle: True"
+            print "Find needed file: True"
             return True
           
             
     def downloadAllStockJson(self,isNeedDownload):
-        allStockJsonPath = FinancialFolder + 'szse_stock.json'
-        
         if(False==isNeedDownload):
-            return allStockJsonPath
-        print "!!!!!!allStockJsonPath:",allStockJsonPath 
+            return SzseStockFile
         try:
-            urllib.urlretrieve(self.allstockjson_url, allStockJsonPath)
-            return allStockJsonPath
+            urllib.urlretrieve(self.allstockjson_url, SzseStockFile)
+            return SzseStockFile
         except IOError:
             print "DownLoad AllStockJson fail"
             return None

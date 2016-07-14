@@ -40,7 +40,8 @@ while (ProcessIndex < 5):
 SavedInfoFile = FinancialFolder + 'stockreportlist' + str(ProcessIndex) + '.json'       
 FailReportPath = FinancialFolder + 'szse_stock_failList' + str(ProcessIndex) + '.json'
 DownloadPdfFailLists = FinancialFolder + 'downloadPdfFailLists' + str(ProcessIndex) + '.txt' 
-  
+SzseStockFile = FinancialFolder + 'szse_stock.json'
+
 if (False == os.path.exists(FinancialFolder)):
     os.makedirs(FinancialFolder)
 
