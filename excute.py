@@ -7,6 +7,7 @@ import os
 import platform
 import time
 import codecs
+from time import sleep
 
 runTime = 0
 SysStr = platform.system()
@@ -25,25 +26,32 @@ FinalSavedInfoFile = FinancialFolder + 'stockreportlist' + '.json'
 FinalFailReportPath = FinancialFolder + 'szse_stock_failList' + '.json'
 FinalDownloadPdfFailLists = FinancialFolder + 'downloadPdfFailLists' + '.txt'
 try:
-    os.remove(FinalSavedInfoFile)
-    os.remove(FinalFailReportPath)
-    os.remove(FinalSavedInfoFile)
+    if (True == os.path.exists(FinalSavedInfoFile)):
+        os.remove(FinalSavedInfoFile)
+    if (True == os.path.exists(FinalFailReportPath)):
+        os.remove(FinalFailReportPath)
+    if (True == os.path.exists(FinalDownloadPdfFailLists)):
+        os.remove(FinalDownloadPdfFailLists)
 except Exception, e:
     print "ERROR: remove all final report file fail:", e
-    continue
 
 #Step2: remove all 1,2,3,4 file
 print "-----Step2: remove all 1,2,3,4 file-----"
-for index in range(1, 4):
+for index in range(1, 5):
     SavedInfoFile = FinancialFolder + 'stockreportlist' + str(index) + '.json'       
     FailReportPath = FinancialFolder + 'szse_stock_failList' + str(index) + '.json'
     DownloadPdfFailLists = FinancialFolder + 'downloadPdfFailLists' + str(index) + '.txt'
     TxtFile = FinancialFolder + str(index) + '.txt'
     try:
-        os.remove(SavedInfoFile)
-        os.remove(FailReportPath)
-        os.remove(DownloadPdfFailLists)
-        os.remove(TxtFile)
+        if (True == os.path.exists(SavedInfoFile)):
+            os.remove(SavedInfoFile)
+        if (True == os.path.exists(FailReportPath)):
+            os.remove(FailReportPath)
+        if (True == os.path.exists(DownloadPdfFailLists)):
+            os.remove(DownloadPdfFailLists)
+        if (True == os.path.exists(TxtFile)):
+            print "remove: ", TxtFile
+            os.remove(TxtFile)
     except Exception, e:
         print "ERROR: remove all 1,2,3,4 file fail:", e
         continue
@@ -51,9 +59,13 @@ for index in range(1, 4):
 #Step3: Start 4 process to scrapy pdf and check 4 process is ok or not.
 print "-----Step3: Start 4 process to scrapy pdf and check 4 process is ok or not.-----"
 os.system("gnome-terminal --title='test' -e '/bin/bash -c \"scrapy crawl cninfo\"'")
+time.sleep(5)
 os.system("gnome-terminal --title='test' -e '/bin/bash -c \"scrapy crawl cninfo\"'")
+time.sleep(5)
 os.system("gnome-terminal --title='test' -e '/bin/bash -c \"scrapy crawl cninfo\"'")
+time.sleep(5)
 os.system("gnome-terminal --title='test' -e '/bin/bash -c \"scrapy crawl cninfo\"'")
+time.sleep(5)
 
 for index in range(1, 4): 
     if (False == os.path.exists(TxtFile)):

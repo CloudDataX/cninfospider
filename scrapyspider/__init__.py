@@ -23,7 +23,7 @@ else:
 
 
    
-# Use 1.txt 2.txt 3.txt ... to distribute different process
+# Use 1.txt 2.txt 3.txt 4.txt ... to distribute different process
 
 
 while (ProcessIndex < 5):
@@ -33,6 +33,8 @@ while (ProcessIndex < 5):
         writeData = '{}'
         f.write(writeData)
         f.close()
+        break
+    elif ( True == os.path.exists(ProcessFile)) and (ProcessIndex == 4):
         break
     else:
         ProcessIndex += 1
