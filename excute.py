@@ -20,6 +20,7 @@ else:
     os._exit()
 
 #Step1: remove all the final report file
+print "-----Step1: remove all the final report file-----"
 FinalSavedInfoFile = FinancialFolder + 'stockreportlist' + '.json'       
 FinalFailReportPath = FinancialFolder + 'szse_stock_failList' + '.json'
 FinalDownloadPdfFailLists = FinancialFolder + 'downloadPdfFailLists' + '.txt'
@@ -28,10 +29,11 @@ try:
     os.remove(FinalFailReportPath)
     os.remove(FinalSavedInfoFile)
 except Exception, e:
-    print "ERROR:", e
+    print "ERROR: remove all final report file fail:", e
     continue
 
 #Step2: remove all 1,2,3,4 file
+print "-----Step2: remove all 1,2,3,4 file-----"
 for index in range(1, 4):
     SavedInfoFile = FinancialFolder + 'stockreportlist' + str(index) + '.json'       
     FailReportPath = FinancialFolder + 'szse_stock_failList' + str(index) + '.json'
@@ -43,10 +45,11 @@ for index in range(1, 4):
         os.remove(DownloadPdfFailLists)
         os.remove(TxtFile)
     except Exception, e:
-        print "ERROR:", e
+        print "ERROR: remove all 1,2,3,4 file fail:", e
         continue
         
 #Step3: Start 4 process to scrapy pdf and check 4 process is ok or not.
+print "-----Step3: Start 4 process to scrapy pdf and check 4 process is ok or not.-----"
 os.system("gnome-terminal --title='test' -e '/bin/bash -c \"scrapy crawl cninfo\"'")
 os.system("gnome-terminal --title='test' -e '/bin/bash -c \"scrapy crawl cninfo\"'")
 os.system("gnome-terminal --title='test' -e '/bin/bash -c \"scrapy crawl cninfo\"'")
@@ -57,6 +60,7 @@ for index in range(1, 4):
         print "Process:", index, "not start normally"
  
 #Step4: Every 5mins search 4 process finish or not. If finish break
+print "-----Step4: Every 5mins search 4 process finish or not. If finish break-----"
 while(True):
     time.sleep(300)
     runTime += 1
@@ -77,6 +81,7 @@ while(True):
         break
     
 #Step5: create final file
+print "-----Step5: create final file-----"
 if (False == os.path.exists(FinalSavedInfoFile)):
     f= codecs.open(FinalSavedInfoFile,'w','utf-8')
     writeData = '{"stockList":[]}'
@@ -96,6 +101,7 @@ if (False==os.path.exists(FinalDownloadPdfFailLists)):
     f.close()
 
 #Step6: combine all 1,2,3,4 to final file
+print "-----Step6: combine all 1,2,3,4 to final file-----"
 for index in range(1, 4):
     SavedInfoFile = FinancialFolder + 'stockreportlist' + str(index) + '.json'       
     FailReportPath = FinancialFolder + 'szse_stock_failList' + str(index) + '.json'
@@ -138,4 +144,4 @@ for index in range(1, 4):
         sourceFileData.close()
         targetFileDate.close()
         
-print "All cninfo spider are finish"
+print "-----All cninfo spider are finish-----"
